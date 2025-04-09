@@ -18,7 +18,7 @@ export default function StaffListScreen() {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
 
     const onClickStaffDetail = (staffId: number) => {
-        navigation.navigate("StaffDetail", {id: staffId});
+        navigation.navigate("StaffDetail", {id: staffId} as never);
     };
 
     useEffect(()=> {
