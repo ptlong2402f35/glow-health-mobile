@@ -67,7 +67,7 @@ export default function LoginScreen(props: any) {
             </TouchableOpacity>
 
             <Text
-                style={styles.buttonText}
+                style={styles.skipBtnText}
                 onPress={() => {
                     navigation.navigate("Home");
                 }}
@@ -75,7 +75,7 @@ export default function LoginScreen(props: any) {
                 Bỏ qua
             </Text>
 
-            <BottomTab />
+            {/* <BottomTab /> */}
         </View>
     );
 }

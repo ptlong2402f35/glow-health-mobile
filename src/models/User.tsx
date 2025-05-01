@@ -5,6 +5,12 @@ import Staff from "./Staff";
 import Store from "./Store";
 import Transaction from "./Transaction";
 
+export enum UserRole {
+    Admin = 1,
+    Customer = 2,
+    Staff = 3,
+}
+
 
 export default class User implements IModel<User> {
     id?: number | null;

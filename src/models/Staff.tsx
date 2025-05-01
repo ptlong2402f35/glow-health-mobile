@@ -3,6 +3,10 @@ import StaffService from "./StaffService";
 import Store from "./Store";
 import User from "./User";
 
+export enum  StaffRole {
+    Individual= 1,
+    OwnerStation= 2
+}
 
 export default class Staff implements IModel<Staff> {
 	id?: number | null;

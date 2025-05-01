@@ -144,8 +144,8 @@ export const detailStaffStyles = StyleSheet.create({
         color: "#fff",
     },
     choseWrap: {
-      borderWidth: 1,
-      borderColor: "#4b5",
+        borderWidth: 1,
+        borderColor: "#4b5",
     },
     buttonText: {
         // color: '#fff',
@@ -176,5 +176,125 @@ export const detailStaffStyles = StyleSheet.create({
         paddingVertical: 4,
         borderRadius: 8,
         backgroundColor: "#4b5",
+    },
+});
+
+export const staffInfoUpdateStyle = StyleSheet.create({
+    container: { padding: 16, backgroundColor: "#fff" },
+    toggleContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: 10,
+    },
+    toggleText: { fontSize: 16 },
+    sectionTitle: { fontSize: 18, fontWeight: "bold", marginVertical: 10 },
+    imageRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginVertical: 10,
+    },
+    avatar: { width: 60, height: 60, borderRadius: 8 },
+    placeholder: {
+        width: 60,
+        height: 60,
+        backgroundColor: "#eee",
+        borderRadius: 8,
+    },
+    note: { fontSize: 12, color: "#555" },
+    input: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 6,
+        padding: 10,
+        marginVertical: 6,
+    },
+    textArea: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 6,
+        padding: 10,
+        height: 80,
+    },
+    label: { marginTop: 10, fontWeight: "bold" },
+    picker: { borderWidth: 1, borderColor: "#ccc", borderRadius: 6 },
+    row: { flexDirection: "row", alignItems: "center", marginVertical: 6 },
+    radio: {
+        marginLeft: 10,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        padding: 6,
+        borderRadius: 4,
+    },
+    selected: { backgroundColor: "#cde" },
+    saveBtn: {
+        backgroundColor: "#5a7d5a",
+        padding: 12,
+        borderRadius: 8,
+        alignItems: "center",
+        marginVertical: 20,
+    },
+    saveText: { color: "white", fontSize: 16, fontWeight: "bold" },
+});
+
+export const staffServiceStyles = StyleSheet.create({
+    container: {
+        padding: 16,
+        backgroundColor: "#fff",
+    },
+    note: {
+        color: "red",
+        marginBottom: 10,
+    },
+    sectionTitle: {
+        fontWeight: "bold",
+        fontSize: 18,
+        marginBottom: 10,
+    },
+    serviceBox: {
+        backgroundColor: "#f4f4f4",
+        padding: 12,
+        borderRadius: 8,
+        marginBottom: 12,
+    },
+    serviceHeader: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    serviceName: {
+        fontSize: 16,
+        fontWeight: "500",
+    },
+    input: {
+        marginTop: 8,
+        backgroundColor: "white",
+    },
+    addServiceRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginVertical: 6,
+    },
+    saveButton: {
+        marginTop: 20,
+    },
+    ssPriceUpdateWrap: {
+        display: "flex",
+        flexDirection: "row",
+        flex: 1,
+        alignItems: "center",
+    },
+    dialogContainer: {
+        marginBottom: 6,
+    },
+    dialogInput: {
+        width: "60%",
+        height: 45,
+        paddingLeft: 10,
+        marginBottom: 15,
+        backgroundColor: "#fff",
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 5,
     },
 });

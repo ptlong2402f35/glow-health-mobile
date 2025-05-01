@@ -4,19 +4,51 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./views/pages/login/LoginScreen";
 import SignUpScreen from "./views/pages/login/SignupScreen";
 import {
+    CustomerAddressList,
+    CustomerAddressUpdate,
     Home,
     IconLoading,
     Login,
+    MyCustomerDetail,
+    MyOrderDetail,
+    MyOrderList,
+    MyOrderPendingDetail,
     Notification,
+    OrderCreate,
+    PaymentMethodSelect,
+    Review,
     Signup,
     StaffDetail,
+    StaffInfoUpdate,
     StaffList,
+    StaffOrderList,
+    StaffServiceUpdate,
+    Support,
+    UpdatePassword,
+    UserAccount,
+    Wallet
 } from "./statics/config";
 import HomeScreen from "./views/pages/home/HomeScreen";
 import IconLoadingScreen from "./views/pages/init/IconLoadingScreen";
 import { navigationRef } from "./NavigationService";
 import StaffListScreen from "./views/pages/staff/StaffListScreen";
 import StaffDetailScreen from "./views/pages/staff/StaffDetailScreen";
+import StaffOrderListScreen from "./views/pages/order/StaffOrderListScreen";
+import AccountScreen from "./views/pages/user/UserAccountScreen";
+import StaffServiceUpdateScreen from "./views/pages/staff/StaffServiceUpdateScreen";
+import StaffInfoUpdateScreen from "./views/pages/staff/StaffInfoUpdateScreen";
+import CustomerAddressListScreen from "./views/pages/customerAddress/CustomerAddressListScreen";
+import CustomerAddressCreateScreen from "./views/pages/customerAddress/CustomerAddressCreateScreen";
+import WalletScreen from "./views/pages/transaction/WalletScreen";
+import SupportScreen from "./views/pages/user/SupportScreen";
+import UserInfoScreen from "./views/pages/user/UserInfoScreen";
+import ChangePasswordScreen from "./views/pages/user/ChangePasswordScreen";
+import CustomerOrderDetailScreen from "./views/pages/order/CustomerOrderDetailScreen";
+import OrderCustomerListScreen from "./views/pages/order/OrderCustomerListScreen";
+import OrderCustomerPendingScreen from "./views/pages/order/OrderCustomerPendingScreen";
+import ReviewOrderScreen from "./views/pages/order/ReviewOrderScreen";
+import OrderCreateDetailScreen from "./views/pages/order/OrderCreateDetailScreen";
+import PaymentMethodScreen from "./views/pages/transaction/PaymentMethodScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -61,6 +93,86 @@ export default function Router() {
                     name={StaffDetail}
                     options={{}}
                     component={StaffDetailScreen}
+                />
+                <Stack.Screen
+                    name={StaffOrderList}
+                    options={{}}
+                    component={StaffOrderListScreen}
+                />
+                <Stack.Screen
+                    name={UserAccount}
+                    options={{}}
+                    component={AccountScreen}
+                />
+                <Stack.Screen
+                    name={StaffInfoUpdate}
+                    options={{}}
+                    component={StaffInfoUpdateScreen}
+                />
+                <Stack.Screen
+                    name={StaffServiceUpdate}
+                    options={{}}
+                    component={StaffServiceUpdateScreen}
+                />
+                <Stack.Screen
+                    name={CustomerAddressList}
+                    options={{}}
+                    component={CustomerAddressListScreen}
+                />
+                <Stack.Screen
+                    name={CustomerAddressUpdate}
+                    options={{}}
+                    component={CustomerAddressCreateScreen}
+                />
+                <Stack.Screen
+                    name={Wallet}
+                    options={{}}
+                    component={WalletScreen}
+                />
+                <Stack.Screen
+                    name={Support}
+                    options={{}}
+                    component={SupportScreen}
+                />
+                <Stack.Screen
+                    name={MyCustomerDetail}
+                    options={{}}
+                    component={UserInfoScreen}
+                />
+                <Stack.Screen
+                    name={UpdatePassword}
+                    options={{}}
+                    component={ChangePasswordScreen}
+                />
+                <Stack.Screen
+                    name={MyOrderList}
+                    options={{}}
+                    component={OrderCustomerListScreen}
+                />
+                <Stack.Screen
+                    name={MyOrderDetail}
+                    options={{}}
+                    component={CustomerOrderDetailScreen}
+                />
+                <Stack.Screen
+                    name={MyOrderPendingDetail}
+                    options={{}}
+                    component={OrderCustomerPendingScreen}
+                />
+                <Stack.Screen
+                    name={Review}
+                    options={{}}
+                    component={ReviewOrderScreen}
+                />
+                <Stack.Screen
+                    name={OrderCreate}
+                    options={{}}
+                    component={OrderCreateDetailScreen}
+                />
+                <Stack.Screen
+                    name={PaymentMethodSelect}
+                    options={{}}
+                    component={PaymentMethodScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

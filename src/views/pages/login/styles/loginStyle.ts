@@ -35,6 +35,12 @@ export const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 16,
     },
+    skipBtnText: {
+        textAlign: "center",
+        fontWeight: "bold",
+        fontSize: 16,
+        color: "black",
+    },
 });
 
 export const signupStyles = StyleSheet.create({

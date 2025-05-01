@@ -1,4 +1,5 @@
 import IModel from "./IModel";
+import StaffService from "./StaffService";
 
 
 export default class StaffServicePrice implements IModel<StaffServicePrice> {
@@ -9,6 +10,7 @@ export default class StaffServicePrice implements IModel<StaffServicePrice> {
     serviceGroupId?: number | null;
     createdAt?: Date | null;
     updatedAt?: Date | null;
+    staffService?: StaffService | null;
 
     constructor(input?: Partial<StaffServicePrice>) {
         this.id = input?.id || null;
@@ -18,6 +20,7 @@ export default class StaffServicePrice implements IModel<StaffServicePrice> {
         this.serviceGroupId = input?.serviceGroupId || null;
         this.createdAt = input?.createdAt || null;
         this.updatedAt = input?.updatedAt || null;
+        this.staffService = input?.staffService || null;
     }
 
     parse(json?: any): StaffServicePrice {
@@ -25,6 +28,7 @@ export default class StaffServicePrice implements IModel<StaffServicePrice> {
 
         Object.assign(this, {
             ...json,
+            staffService: new StaffService().parse(json.staffService),
         });
 
         return this;

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function AuthenticationService() {
+export default function useAuthentication() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     const getToken = async () => {

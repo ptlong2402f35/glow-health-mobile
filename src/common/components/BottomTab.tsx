@@ -11,12 +11,20 @@ import LoginScreen from "../../views/pages/login/LoginScreen";
 import SignUpScreen from "../../views/pages/login/SignupScreen";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useBottomTab from "../../hook/useBottomTab";
+import useUserLoader from "../../hook/useUserLoader";
+import { StaffRole } from "../../models/Staff";
+import { UserRole } from "../../models/User";
 
 export default function BottomTab() {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     const { tabName, changeTab } = useBottomTab();
+    const { isLogin, userLoader } = useUserLoader();
+    console.log("======== ISLOGIN", isLogin);
+    let role = userLoader?.role;
+    let isStaff = role === UserRole.Staff;
 
     const onChangeTab = (name: string) => {
+        console.log("navigation", name);
         changeTab?.(name);
         navigation.navigate(name as any);
     };
@@ -31,23 +39,11 @@ export default function BottomTab() {
                 right: 0,
             }}
         >
-            <View style={styles.tabBar}>
-                <TabButton
-                    title="Home"
-                    active={tabName === "Home"}
-                    onPress={() => onChangeTab("Home")}
-                />
-                <TabButton
-                    title="Profile"
-                    active={tabName === "Login"}
-                    onPress={() => onChangeTab("Login")}
-                />
-                <TabButton
-                    title="Settings"
-                    active={tabName === "Signup"}
-                    onPress={() => onChangeTab("Signup")}
-                />
-            </View>
+            {isLogin && isStaff ? (
+                <StaffBottomTab tabName={tabName} onChangeTab={onChangeTab} />
+            ) : (
+                <GuestTab tabName={tabName} onChangeTab={onChangeTab} />
+            )}
         </View>
     );
 }
@@ -68,6 +64,51 @@ function TabButton(props: {
                 {props.title}
             </Text>
         </TouchableOpacity>
+    );
+}
+
+function StaffBottomTab(props: {
+    tabName?: string;
+    onChangeTab?: (name: string) => void;
+}) {
+    return (
+        <View style={styles.tabBar}>
+            <TabButton
+                title="Trang chủ"
+                active={props.tabName === "Home"}
+                onPress={() => props.onChangeTab?.("Home")}
+            />
+            <TabButton
+                title="Nhận việc"
+                active={props.tabName === "StaffOrderList"}
+                onPress={() => props.onChangeTab?.("StaffOrderList")}
+            />
+            <TabButton
+                title="Tài khoản"
+                active={props.tabName === "UserAccount"}
+                onPress={() => props.onChangeTab?.("UserAccount")}
+            />
+        </View>
+    );
+}
+
+function GuestTab(props: {
+    tabName?: string;
+    onChangeTab?: (name: string) => void;
+}) {
+    return (
+        <View style={styles.tabBar}>
+            <TabButton
+                title="Trang chủ"
+                active={props.tabName === "Home"}
+                onPress={() => props.onChangeTab?.("Home")}
+            />
+            <TabButton
+                title="Tài khoản"
+                active={props.tabName === "UserAccount"}
+                onPress={() => props.onChangeTab?.("UserAccount")}
+            />
+        </View>
     );
 }
 

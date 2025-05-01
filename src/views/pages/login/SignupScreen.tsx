@@ -87,7 +87,7 @@ const SignUpScreen = () => {
                 </TouchableOpacity>
             </View>
 
-            <BottomTab/>
+            {/* <BottomTab/> */}
         </View>
     );
 };

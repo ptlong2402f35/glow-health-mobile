@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // Bạn có thể dùng icon khác tùy ý
+import { Ionicons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useUserLoader from "../../hook/useUserLoader";
 const DefaultAvatar = require("../../../assets/defaultAvatar.png");
@@ -15,12 +15,15 @@ const CustomHeader = (props: { avatarUrl?: string; name?: string }) => {
     };
 
     const customerSubTab = () => {
-        if(!isLogin) navigation.navigate("Login");
-        if(userRole === 2) {
+        if (!isLogin) navigation.navigate("Login");
+        if (userRole === 2) {
             //navigation register
+            navigation.navigate("StaffInfoUpdate");
         }
-        if(userRole === 3) {
+        if (userRole === 3) {
             //navi detail
+            navigation.navigate("StaffInfoUpdate");
+
         }
     };
     return (
@@ -45,7 +48,11 @@ const CustomHeader = (props: { avatarUrl?: string; name?: string }) => {
                             : "Xin chào quý khách"}
                     </Text>
                     <Text style={styles.name} onPress={customerSubTab}>
-                            {isLogin ? (userRole === 2 ? "Đăng kí KTV Glow" : "Đối tác Glow") : "Đăng nhập để trải nghiệm"}
+                        {isLogin
+                            ? userRole === 2
+                                ? "Đăng kí KTV Glow"
+                                : "Đối tác Glow"
+                            : "Đăng nhập để trải nghiệm"}
                     </Text>
                 </View>
             </View>
@@ -75,7 +82,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderBottomWidth: 1,
         borderBottomColor: "#ddd",
-        zIndex: 9999
+        zIndex: 9999,
     },
     leftSection: {
         flexDirection: "row",

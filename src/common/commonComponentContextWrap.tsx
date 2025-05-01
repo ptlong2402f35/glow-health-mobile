@@ -5,6 +5,7 @@ import useAttachAlertDialog from "./useAttachAlertDialog";
 import AlertDialog from "./components/AlertDialog";
 import useAttachBottomTab from "./useAttachBottomTab";
 import useAttachUserLoader, { UserLoader } from "./useAttachUserLoader";
+import User from "../models/User";
 
 export type CommonComponentsWrapContextType = {
     loadingDialog: {
@@ -29,6 +30,8 @@ export type CommonComponentsWrapContextType = {
     userLoader?: UserLoader | null;
     isLogin?: boolean;
     reloadMe?: () => Promise<void>;
+    user?: User | null;
+    logout?:() => Promise<void>;
     // imageDialog: {
     // 	openImageDialog: (
     // 		url?: string,
@@ -60,7 +63,7 @@ export default function CommonComponentsWrap(props: {
         closeAlertDialog,
     } = useAttachAlertDialog({});
     const { tabName, changeTab } = useAttachBottomTab({});
-    const { isLogin, userLoader, me: reloadMe } = useAttachUserLoader({});
+    const { isLogin, userLoader, me: reloadMe, logout, user } = useAttachUserLoader({});
     return (
         <CommonComponentsWrapContext.Provider
             value={{
@@ -79,6 +82,8 @@ export default function CommonComponentsWrap(props: {
                 userLoader,
                 isLogin,
                 reloadMe,
+                logout,
+                user
             }}
         >
             {props.children}

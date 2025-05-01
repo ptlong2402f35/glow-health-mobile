@@ -5,6 +5,15 @@ import Store from "./Store";
 import User from "./User";
 import Voucher from "./Voucher";
 
+export enum OrderStatus {
+    Pending = 1,
+    Approved = 2,
+    Finished = 3,
+    Canceled = 4,
+    Denied = 5,
+    StaffCanceled = 6
+}
+
 
 export default class Order implements IModel<Order> {
     id?: number | null;
@@ -42,6 +51,11 @@ export default class Order implements IModel<Order> {
     voucher?: Voucher | null;
     prices?: StaffServicePrice[] | null;
     store?: Store | null;
+    isForwardOrder?: boolean | null;
+    baseOrderId?: number | null;
+    forwardOrderId?: number | null;
+    forwardOrderStatus?: number | null;
+    forwardAccept?: boolean | null;
 
     constructor(input?: Partial<Order>) {
         this.id = input?.id || null;
@@ -79,6 +93,11 @@ export default class Order implements IModel<Order> {
         this.voucher = input?.voucher || null;
         this.prices = input?.prices || [];
         this.store = input?.store || null;
+        this.isForwardOrder = input?.isForwardOrder || false;
+        this.baseOrderId = input?.baseOrderId || null;
+        this.forwardOrderId = input?.forwardOrderId || null;
+        this.forwardOrderStatus = input?.forwardOrderStatus || null;
+        this.forwardAccept = input?.forwardAccept || false;
     }
 
     parse(json?: any): Order {

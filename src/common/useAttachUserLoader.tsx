@@ -37,7 +37,7 @@ export default function useAttachUserLoader(props: {}) {
         }
         try {
             let data = await AuthService.me();
-
+            setUser(data);
             setUserLoader(
                 {
                     ...data,
@@ -49,9 +49,15 @@ export default function useAttachUserLoader(props: {}) {
         }
         catch (err) {
             setIsLogin(false);
-        }
+        }        
+    }
 
-        
+    const logout = async () => {
+        await AsyncStorage.removeItem("token");
+        await AsyncStorage.removeItem("refreshToken");
+        setIsLogin(false);
+        setUserLoader(null);
+        setUser(null);
     }
 
     return {
@@ -60,6 +66,7 @@ export default function useAttachUserLoader(props: {}) {
         userLoader,
         updateUserLoader,
         me,
-        isLogin
+        isLogin,
+        logout
     };
 }

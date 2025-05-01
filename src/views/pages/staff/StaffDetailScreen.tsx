@@ -10,9 +10,11 @@ import {
 import { detailStaffStyles } from "./styles/styles";
 import useHandleStaffDetail from "./hook/useHandleStaffDetail";
 import StaffServiceItem from "./components/StaffServiceItem";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 const DefaultAvatar = require("../../../../assets/defaultAvatar.png");
 
 export default function StaffDetailScreen(props: { route?: any }) {
+    const navigation: NavigationProp<RootStackParamList> = useNavigation();
     const { id } = props.route?.params;
     const {
         staff,
@@ -45,6 +47,34 @@ export default function StaffDetailScreen(props: { route?: any }) {
         setTotalMoney(total);
     };
 
+    const onContinueOrderCreate = () => {
+        let prices = [];
+        for(let sservice of staff?.staffServices || []) {
+            for (let price of sservice.prices || []) {
+                if(priceIds?.includes(price.id || 0)) {
+                    prices.push({
+                        id: price.id,
+                        name: sservice.name,
+                        price: price.price,
+                    })
+                }
+            }
+        }
+        console.log("route push", {
+            staff: staff,
+            prices,
+            totalMoney: totalMoney
+        })
+        navigation.navigate("OrderCreate", {
+            data: {
+                staff: staff,
+                prices,
+                totalMoney: totalMoney
+            },
+            id: staff?.id
+        } as never)
+    };
+
     useEffect(() => {
         getStaffDetail({ id });
         setPriceIds([]);
@@ -66,7 +96,7 @@ export default function StaffDetailScreen(props: { route?: any }) {
             <ScrollView style={detailStaffStyles.container}>
                 {/* Banner */}
                 <Image
-                    source={DefaultAvatar} // Thay bằng hình ảnh tương ứng
+                    source={DefaultAvatar}
                     style={detailStaffStyles.imageWrap}
                     resizeMode="cover"
                 />
@@ -110,7 +140,7 @@ export default function StaffDetailScreen(props: { route?: any }) {
                     <View>
                         <TouchableOpacity
                             style={detailStaffStyles.orderBottomBtn}
-                            onPress={() => {}}
+                            onPress={onContinueOrderCreate}
                         >
                             <Text style={{ color: "white" }}>Tiếp tục</Text>
                         </TouchableOpacity>

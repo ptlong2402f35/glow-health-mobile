@@ -5,7 +5,23 @@ type RootStackParamList = {
     IconLoading: undefined;
     Notification: undefined;
     StaffList: undefined;
-    StaffDetail: undefined
+    StaffDetail: undefined;
+    UserAccount: undefined;
+    StaffOrderList: undefined;
+    StaffInfoUpdate: undefined;
+    StaffServiceUpdate: undefined;
+    CustomerAddressUpdate: undefined;
+    CustomerAddressList: undefined;
+    Support: undefined;
+    Wallet: undefined;
+    MyCustomerDetail: undefined;
+    UpdatePassword: undefined;
+    MyOrderList: undefined;
+    MyOrderDetail: undefined;
+    MyOrderPendingDetail: undefined;
+    Review: undefined;
+    OrderCreate: undefined;
+    PaymentMethodSelect: undefined;
 }
 
 declare global {
