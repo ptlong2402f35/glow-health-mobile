@@ -27,4 +27,33 @@ export default class TransactionService {
             pages: data.pages || 1,
         };
     }
+
+    public static async topupWallet(props: {amount?: number}) {
+        const body = {
+            amount: props.amount || 0,
+            paymentMethodId: 1
+        }
+
+        const {data} = await http.post(`/payment/recharge`, body);
+
+        console.log("paypal payment data ===", data);
+
+        return data;
+    }
+
+
+    public static async topupWalletSuccessfull(props: {data: any}) {
+        const body = {
+            data: props.data || {},
+            paymentMethodId: 1
+        }
+
+        console.log("body ===", body);
+
+        const {data} = await http.post(`/payment/recharge-success`, body);
+
+        console.log("payment data ===", data);
+
+        return data;
+    }
 }

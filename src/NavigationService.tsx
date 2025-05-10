@@ -11,3 +11,7 @@ export function navigate(name: string, params?: object) {
     changeTab?.(name);
   }
 }
+
+export function getCurrentRouteName() {
+  return navigationRef.getCurrentRoute()?.name;
+}

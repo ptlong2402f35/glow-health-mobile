@@ -61,10 +61,8 @@ const HomeScreen = () => {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
             <CustomHeader />
             <ScrollView style={styles.wrapper}>
-                {/* Danh sách dịch vụ */}
                 {data.map((item) => (
                     <TouchableOpacity
                         key={item.id}

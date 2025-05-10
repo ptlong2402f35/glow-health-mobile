@@ -3,12 +3,13 @@ import Order from "../../../../models/Order";
 import OrderServiceApi from "../../../../services/orderService";
 import useLoadingDialog from "../../../../hook/useLoading";
 import useAlertDialog from "../../../../hook/useAlert";
+import OrderForwarder from "../../../../models/OrderForwarder";
 
 export default function useCustomerOrderDetail() {
     const {openLoadingDialog, closeLoadingDialog} = useLoadingDialog();
     const {openAlertDialog, closeAlertDialog} = useAlertDialog();
     const [order, setOrder] = useState<Order | null>(null);
-    const [forwardOrder, setForwardOrder] = useState<Order[] | null>(null);
+    const [forwardOrder, setForwardOrder] = useState<OrderForwarder[] | null>(null);
 
     const getOrderDetail = async (orderId: number) => {
         try {
@@ -55,11 +56,29 @@ export default function useCustomerOrderDetail() {
         }
     }
 
+    const switchForwardOrder = async (baseOrderId: number, forwardOrderId: number, successCall?: (id?:number) => void) => {
+        try {
+            openLoadingDialog?.();
+            let resp = await OrderServiceApi.switchOrder({baseOrderId, forwardOrderId});
+            closeLoadingDialog?.();
+            successCall?.(resp.orderId || 0);
+        }
+        catch (err: any) {
+            let message = err?.response?.data?.message;
+            console.log("error", message);
+            openAlertDialog?.("Thông báo", message);
+        }
+        finally {
+            closeLoadingDialog?.();
+        }
+    } 
+
     return {
         order,
         forwardOrder,
         getOrderDetail,
         cancelOrderByCustomer,
-        getForwardOrder
+        getForwardOrder,
+        switchForwardOrder
     }
 }

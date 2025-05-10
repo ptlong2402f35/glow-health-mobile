@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import useLoadingDialog from "../../../../hook/useLoading";
 import AuthService from "../../../../services/authService";
 import useUserLoader from "../../../../hook/useUserLoader";
+import PusherConfig from "../../../../hook/pusher/pusher";
 
 export default function useHandleLogin() {
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
@@ -25,6 +26,8 @@ export default function useHandleLogin() {
             await AsyncStorage.setItem("token", resp?.accessToken);
             await AsyncStorage.setItem("refreshToken", resp?.refreshToken);
             await reloadMe?.();
+            new PusherConfig().subcribe(resp.userId);
+
             data?.onSuccess?.();
         } catch (err: any) {
             let message = err?.response?.data.message || "";

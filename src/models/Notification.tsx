@@ -1,5 +1,15 @@
 import IModel from "./IModel";
 
+export enum NotificationActionType {
+    Wallet = 1,
+    OrderDetail = 2,
+    OrderList = 3,
+    StaffProfile = 4,
+    StaffServiceInfo = 5,
+    Home = 6,
+    OrderCustomerDetail = 7,
+    OrderCustomerList = 8
+}
 
 export default class Notification implements IModel<Notification> {
     id?: number | null;

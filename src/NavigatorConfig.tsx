@@ -16,14 +16,18 @@ import {
     Notification,
     OrderCreate,
     PaymentMethodSelect,
+    PaymentStatusView,
+    RechargeView,
     Review,
     Signup,
     StaffDetail,
     StaffInfoUpdate,
     StaffList,
+    StaffOrderDetail,
     StaffOrderList,
     StaffServiceUpdate,
     Support,
+    Topup,
     UpdatePassword,
     UserAccount,
     Wallet
@@ -49,6 +53,11 @@ import OrderCustomerPendingScreen from "./views/pages/order/OrderCustomerPending
 import ReviewOrderScreen from "./views/pages/order/ReviewOrderScreen";
 import OrderCreateDetailScreen from "./views/pages/order/OrderCreateDetailScreen";
 import PaymentMethodScreen from "./views/pages/transaction/PaymentMethodScreen";
+import OrderDetailScreen from "./views/pages/order/StaffOrderDetailScreen";
+import NotificationScreen from "./views/pages/notification/NotificationScreen";
+import PaymentResultScreen from "./views/pages/transaction/PaymentResultScreen";
+import RechargeScreen from "./views/pages/transaction/RechargeScreen";
+import TopUpScreen from "./views/pages/transaction/TopupScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -82,7 +91,7 @@ export default function Router() {
                 <Stack.Screen
                     name={Notification}
                     options={{}}
-                    component={HomeScreen}
+                    component={NotificationScreen}
                 />
                 <Stack.Screen
                     name={StaffList}
@@ -98,6 +107,11 @@ export default function Router() {
                     name={StaffOrderList}
                     options={{}}
                     component={StaffOrderListScreen}
+                />
+                <Stack.Screen
+                    name={StaffOrderDetail}
+                    options={{}}
+                    component={OrderDetailScreen}
                 />
                 <Stack.Screen
                     name={UserAccount}
@@ -173,6 +187,21 @@ export default function Router() {
                     name={PaymentMethodSelect}
                     options={{}}
                     component={PaymentMethodScreen}
+                />
+                <Stack.Screen
+                    name={RechargeView}
+                    options={{}}
+                    component={RechargeScreen}
+                />
+                <Stack.Screen
+                    name={PaymentStatusView}
+                    options={{}}
+                    component={PaymentResultScreen}
+                />
+                <Stack.Screen
+                    name={Topup}
+                    options={{}}
+                    component={TopUpScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

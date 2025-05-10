@@ -11,11 +11,16 @@ export default function useNotificationHandle() {
     const [page, setPage] = useState(1);
     const [maxPage, setMaxPage] = useState(1);
 
-    const getMyNotifications = async (props: { page?: number }) => {
+    const getMyNotifications = async (props: { page?: number, init?: boolean}) => {
         try {
             openLoadingDialog?.();
             let data = await NotificationService.getMyNotification(props);
-            setNotifications([...notifications, ...data.data]);
+            if(props.init) {
+                setNotifications([...data.data]);
+            }
+            else {
+                setNotifications([...notifications, ...data.data]);
+            }
             setPage(data.currentPage);
             setMaxPage(data.pages);
         } catch (err: any) {
@@ -28,7 +33,7 @@ export default function useNotificationHandle() {
 
     const readMyNotification = async (props: {notiIds?: number[], readAll?: boolean}) => {
         try {
-            let data = await NotificationService.updateAddress(props);
+            let data = await NotificationService.readNoti(props);
         } catch (err: any) {
             let message = err?.response?.data.message || "";
             console.log("read noti err", message);
@@ -38,7 +43,7 @@ export default function useNotificationHandle() {
     }
 
     const reload = async () => {
-        await getMyNotifications({page: 1});
+        await getMyNotifications({page: 1, init: true});
     };
 
     const loadMore = async () => {

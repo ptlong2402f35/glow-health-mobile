@@ -18,6 +18,7 @@ import { userAccountStyles } from "./style/style";
 import useUserLoader from "../../../hook/useUserLoader";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useAttachUserLoader from "../../../common/useAttachUserLoader";
+import { UserRole } from "../../../models/User";
 const DefaultAvatar = require("../../../../assets/defaultAvatar.png");
 
 export default function AccountScreen() {
@@ -26,7 +27,6 @@ export default function AccountScreen() {
     const { logout } = useUserLoader();
 
     const redirectLogin = () => {
-        console.log("?????");
         navigation.navigate("Login");
     };
 
@@ -71,7 +71,9 @@ export default function AccountScreen() {
 
                     <TouchableOpacity
                         style={userAccountStyles.card}
-                        onPress={() => {navigation.navigate("StaffDetail")}}
+                        onPress={() => {
+                            navigation.navigate("StaffInfoUpdate", {isRegister: userLoader?.role === UserRole.Staff ? false : true} as never);
+                        }}
                     >
                         <FontAwesome
                             name="handshake-o"
@@ -79,7 +81,7 @@ export default function AccountScreen() {
                             color="black"
                         />
                         <Text style={userAccountStyles.cardText}>
-                            Đối tác Glow - Thông tin chi tiết
+                            {userLoader?.role === UserRole.Staff ? 'Đối tác Glow - Thông tin chi tiết' : "Đăng kí đối tác Glow Health"}
                         </Text>
                     </TouchableOpacity>
 

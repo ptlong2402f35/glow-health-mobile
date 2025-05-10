@@ -13,6 +13,11 @@ export const styles = StyleSheet.create({
         backgroundColor: "#fff",
         flex: 1,
     },
+    headerContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
     header: {
         fontSize: 18,
         fontWeight: "bold",
@@ -81,13 +86,42 @@ export const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 16,
     },
+    btnWrapper: {
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 12,
+        gap: 6
+    },
+    readyCancelBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 24,
+        backgroundColor: "#ccc",
+        minWidth: Dimensions.get("window").width * 0.45,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: "center"
+    },
+    readyBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 24,
+        backgroundColor: "green",
+        minWidth: Dimensions.get("window").width * 0.45,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: "center"
+    }
 });
 
 export const orderDetailStyles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: 16,
         backgroundColor: "#fff",
+        minHeight: Dimensions.get("window").height,
+        position:"relative"
     },
     header: {
         flexDirection: "row",
@@ -124,6 +158,13 @@ export const orderDetailStyles = StyleSheet.create({
         padding: 16,
         borderRadius: 10,
         marginBottom: 16,
+    },
+    priceFlexBox: {
+        marginBottom: 12,
+        display: "flex",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        alignItems: "center",
     },
     priceTitle: {
         fontWeight: "bold",
@@ -182,6 +223,39 @@ export const orderDetailStyles = StyleSheet.create({
         fontWeight: "600",
         fontSize: 15,
     },
+    btnWrapper: {
+        position: "absolute",
+        bottom: 12,
+        left:16,
+        right: 16,
+        display: "flex",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    readyCancelBtn: {
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 24,
+        backgroundColor: "#ccc",
+        minWidth: Dimensions.get("window").width * 0.45,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: "center"
+    },
+    readyBtn: {
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 24,
+        backgroundColor: "green",
+        minWidth: Dimensions.get("window").width * 0.45,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: "center"
+    },
+    fullWidth: {
+        minWidth: Dimensions.get("window").width * 0.9,
+    }
 });
 
 export const customerOrderDetailStyle = StyleSheet.create({
@@ -429,6 +503,11 @@ export const orderCustomerDetailStyle = StyleSheet.create({
         marginLeft: 8,
         fontWeight: "600",
     },
+    forwardStaffContainer: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 12
+    }
 });
 
 export const customerOrderListStyles = StyleSheet.create({

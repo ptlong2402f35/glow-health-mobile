@@ -2,6 +2,8 @@ import { useState } from "react";
 import User from "../models/User";
 import AuthService from "../services/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { disconnectSocket, initSocket } from "../hook/socket/socket";
+import PusherConfig from "../hook/pusher/pusher";
 
 export interface UserLoader {
     name?: string | null;
@@ -46,6 +48,8 @@ export default function useAttachUserLoader(props: {}) {
             );
 
             setIsLogin(true);
+            new PusherConfig().subcribe(data.id);
+            
         }
         catch (err) {
             setIsLogin(false);
@@ -58,6 +62,7 @@ export default function useAttachUserLoader(props: {}) {
         setIsLogin(false);
         setUserLoader(null);
         setUser(null);
+        new PusherConfig().unsub();
     }
 
     return {

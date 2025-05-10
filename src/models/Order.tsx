@@ -14,6 +14,13 @@ export enum OrderStatus {
     StaffCanceled = 6
 }
 
+export enum OrderForwardStatus {
+    Begin = 1,
+    End = 2,
+    Reject = 3,
+    Switched = 4,
+}
+
 
 export default class Order implements IModel<Order> {
     id?: number | null;

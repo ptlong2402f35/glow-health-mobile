@@ -73,6 +73,10 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
     };
 
     useEffect(() => {
+        if(customerOrder?.status === OrderStatus.Pending) navigation.navigate("MyOrderPendingDetail", {id: customerOrder.id} as never);
+    }, [customerOrder?.status])
+
+    useEffect(() => {
         getCustomerOrderDetail({ id });
     }, [id]);
 

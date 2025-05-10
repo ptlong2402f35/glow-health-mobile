@@ -14,19 +14,33 @@ import useCustomerOrderList from "./hook/useCustomerOrderList";
 import useCustomerOrderDetail from "./hook/useCustomerOrderDetail";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Order from "../../../models/Order";
+import OrderForwarder from "../../../models/OrderForwarder";
 const defaultAvatar = require("../../../../assets/defaultAvatar.png");
 
 export default function OrderCustomerPendingScreen(props: { route: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     let id = props.route.params?.id || 0;
 
-    const { order, forwardOrder, getForwardOrder, cancelOrderByCustomer } =
-        useCustomerOrderDetail();
+    const {
+        order,
+        forwardOrder,
+        getForwardOrder,
+        cancelOrderByCustomer,
+    } = useCustomerOrderDetail();
 
     const onCancelOrder = () => {
         cancelOrderByCustomer(id, () => {
             navigation.navigate("MyOrderList");
         });
+    };
+
+    const onRedirectToDetail = (staffId?: number, forwardOrderId?: number) => {
+        navigation.navigate("StaffDetail", {
+            id: staffId,
+            forwardSelect: true,
+            baseOrderId: id,
+            forwardId: forwardOrderId
+        } as never);
     };
 
     useEffect(() => {
@@ -69,8 +83,17 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
 
                 <FlatList
                     style={orderCustomerDetailStyle.forwardListContainer}
+                    contentContainerStyle={{
+                        justifyContent: "center",
+                        alignItems: "flex-start",
+                    }}
                     data={forwardOrder}
-                    renderItem={({ item }) => <ForwardOrderItem item={item} />}
+                    renderItem={({ item }) => (
+                        <ForwardOrderItem
+                            item={item}
+                            redirectStaffDetail={onRedirectToDetail}
+                        />
+                    )}
                     keyExtractor={(item) => item.id + ""}
                 />
 
@@ -82,9 +105,20 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
     );
 }
 
-export function ForwardOrderItem(props: { item: Order }) {
+export function ForwardOrderItem(props: {
+    item: OrderForwarder;
+    redirectStaffDetail?: (staffId?: number, forwardOrderId?: number) => void;
+}) {
     return (
-        <TouchableOpacity>
+        <TouchableOpacity
+            style={orderCustomerDetailStyle.forwardStaffContainer}
+            onPress={() =>
+                props.redirectStaffDetail?.(
+                    props.item?.staffId || 0,
+                    props.item.id || 0
+                )
+            }
+        >
             <Image
                 source={defaultAvatar}
                 style={orderCustomerDetailStyle.illustration}
@@ -92,7 +126,7 @@ export function ForwardOrderItem(props: { item: Order }) {
             />
             <View>
                 <Text>{props.item?.staff?.name || ""}</Text>
-                <Text>{props.item?.staff?.address || ""}</Text>
+                <Text>{props.item?.staff?.rateAvg || ""}</Text>
             </View>
         </TouchableOpacity>
     );

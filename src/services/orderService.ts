@@ -1,5 +1,6 @@
 import { DefaultModel } from "../models/IModel";
 import Order from "../models/Order";
+import OrderForwarder from "../models/OrderForwarder";
 import Staff from "../models/Staff";
 import http from "./http";
 
@@ -61,7 +62,7 @@ export default class OrderServiceApi {
     public static async getForwardOrders(props: { id: number }) {
         const { data } = await http.get(`/my-order-forwarder/${props.id}`);
         console.log("data order forwarder === ", data);
-        return new Order().parseList(data);
+        return new OrderForwarder().parseList(data);
     }
 
     public static async cancelMyOrder(props: { id: number }) {
@@ -76,6 +77,39 @@ export default class OrderServiceApi {
         return data;
     }
 
+    public static async rejectOrder(props: { id: number }) {
+        const { data } = await http.put(`/order-reject/${props.id}`);
+        console.log("data order reject === ", data);
+        return data;
+    }
+
+    public static async cancelApproveOrder(props: {
+        id: number;
+        reasonCancel?: string;
+    }) {
+        const { data } = await http.put(`/order-cancel/${props.id}`, {
+            orderId: props.id,
+            reasonCancel: props.reasonCancel || "",
+        });
+        console.log("data order cancel === ", data);
+        return data;
+    }
+
+    public static async finishOrder(props: { id: number }) {
+        const { data } = await http.put(`/order-finish/${props.id}`);
+        console.log("data order finish === ", data);
+        return data;
+    }
+
+    public static async switchOrder(props: { baseOrderId: number, forwardOrderId: number }) {
+        const { data } = await http.post(`/order-switch-to-forwarder`, {
+            baseOrderId: props.baseOrderId,
+            forwardOrderId: props.forwardOrderId
+        });
+        console.log("data order switched === ", data);
+        return data;
+    }
+
     public static async createOrder(props: {
         staffId: number;
         addressId: number;
@@ -86,7 +120,7 @@ export default class OrderServiceApi {
         timerTime?: Date;
         fromForwardOrderId?: number;
     }) {
-        let body= {
+        let body = {
             staffId: props.staffId,
             addressId: props.addressId,
             voucherCode: props.voucherCode || null,
@@ -95,7 +129,7 @@ export default class OrderServiceApi {
             note: props.note,
             timerTime: props.timerTime,
             fromForwardOrderId: props.fromForwardOrderId,
-        }
+        };
         const { data } = await http.post("/order", body);
 
         return data;

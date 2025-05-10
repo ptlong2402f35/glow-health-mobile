@@ -11,11 +11,16 @@ import { detailStaffStyles } from "./styles/styles";
 import useHandleStaffDetail from "./hook/useHandleStaffDetail";
 import StaffServiceItem from "./components/StaffServiceItem";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { orderDetailStyles } from "../order/style/style";
+import BackButton from "../../../common/components/BackButton";
+import useCustomerOrderDetail from "../order/hook/useCustomerOrderDetail";
 const DefaultAvatar = require("../../../../assets/defaultAvatar.png");
 
 export default function StaffDetailScreen(props: { route?: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     const { id } = props.route?.params;
+    const { forwardId, forwardSelect, baseOrderId } = props.route?.params;
+    const { switchForwardOrder } = useCustomerOrderDetail();
     const {
         staff,
         getStaffDetail,
@@ -49,30 +54,36 @@ export default function StaffDetailScreen(props: { route?: any }) {
 
     const onContinueOrderCreate = () => {
         let prices = [];
-        for(let sservice of staff?.staffServices || []) {
+        for (let sservice of staff?.staffServices || []) {
             for (let price of sservice.prices || []) {
-                if(priceIds?.includes(price.id || 0)) {
+                if (priceIds?.includes(price.id || 0)) {
                     prices.push({
                         id: price.id,
                         name: sservice.name,
                         price: price.price,
-                    })
+                    });
                 }
             }
         }
         console.log("route push", {
             staff: staff,
             prices,
-            totalMoney: totalMoney
-        })
+            totalMoney: totalMoney,
+        });
         navigation.navigate("OrderCreate", {
             data: {
                 staff: staff,
                 prices,
-                totalMoney: totalMoney
+                totalMoney: totalMoney,
             },
-            id: staff?.id
-        } as never)
+            id: staff?.id,
+        } as never);
+    };
+
+    const onConfirmSelectForwardStaff = () => {
+        switchForwardOrder(baseOrderId, forwardId || 0, (newId?: number) => {
+            navigation.navigate("MyOrderDetail", { id: newId || 0 } as never);
+        });
     };
 
     useEffect(() => {
@@ -93,6 +104,7 @@ export default function StaffDetailScreen(props: { route?: any }) {
     }, [priceIds.length]);
     return (
         <View style={detailStaffStyles.wrapContainer}>
+            <BackButton />
             <ScrollView style={detailStaffStyles.container}>
                 {/* Banner */}
                 <Image
@@ -117,18 +129,36 @@ export default function StaffDetailScreen(props: { route?: any }) {
                 </Text>
 
                 <View>
-                    {staff?.staffServices?.map((sservice, i) => (
-                        <StaffServiceItem
-                            key={i}
-                            staffService={sservice}
-                            onClickOrder={onClickOrder}
-                            updateTotalMoney={updateTotalMoney}
-                            priceIds={priceIds}
-                            setPriceIds={setPriceIds}
-                        />
-                    ))}
+                    {!forwardSelect &&
+                        staff?.staffServices?.map((sservice, i) => (
+                            <StaffServiceItem
+                                key={i}
+                                staffService={sservice}
+                                onClickOrder={onClickOrder}
+                                updateTotalMoney={updateTotalMoney}
+                                priceIds={priceIds}
+                                setPriceIds={setPriceIds}
+                            />
+                        ))}
                 </View>
             </ScrollView>
+            {forwardSelect ? (
+                <View style={orderDetailStyles.btnWrapper}>
+                    <TouchableOpacity
+                        style={[
+                            orderDetailStyles.readyBtn,
+                            orderDetailStyles.fullWidth,
+                        ]}
+                        onPress={onConfirmSelectForwardStaff}
+                    >
+                        <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                            Chọn
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            ) : (
+                <View></View>
+            )}
             {isValidOrder && (
                 <View style={detailStaffStyles.orderTabBottom}>
                     <View>

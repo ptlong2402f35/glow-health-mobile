@@ -9,7 +9,7 @@ import useAlertDialog from "../../../../hook/useAlert";
 export default function useStaffOrderList() {
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
     const { openAlertDialog } = useAlertDialog();
-    const { userLoader, isLogin } = useUserLoader();
+    const { userLoader, isLogin, user } = useUserLoader();
     const [orders, setOrders] = useState<Order[]>([]);
     const [orderOffset, setOrderOffset] = useState<number>(0);
     const [forwardOffset, setForwardOffset] = useState<number>(0);
@@ -17,9 +17,24 @@ export default function useStaffOrderList() {
         navigate("Home");
     }
 
-    const getOrderList = async () => {
+    const getOrderList = async (init?: boolean) => {
         try {
             openLoadingDialog?.();
+            if(init) {
+                let {
+                    orders: newOrders,
+                    orderOffsetCount,
+                    forwardOffsetCount,
+                } = await OrderServiceApi.getStaffOrderList({
+                    orderOffset: 0,
+                    forwardOffset: 0,
+                });
+                setOrders([ ...newOrders]);
+                setOrderOffset(orderOffsetCount);
+                setForwardOffset(forwardOffsetCount);
+                closeLoadingDialog?.();
+                return;
+            }
             let {
                 orders: newOrders,
                 orderOffsetCount,
@@ -28,7 +43,6 @@ export default function useStaffOrderList() {
                 orderOffset,
                 forwardOffset,
             });
-
             setOrders([...orders, ...newOrders]);
             setOrderOffset(orderOffsetCount);
             setForwardOffset(forwardOffsetCount);
@@ -52,15 +66,34 @@ export default function useStaffOrderList() {
         } catch (err: any) {
             let message = err?.response?.data.message || "";
             props.onFail?.(message);
+            openAlertDialog?.("Thông báo", message || "Đã có lỗi xảy ra");
+
+        } finally {
+            closeLoadingDialog?.();
+        }
+    };
+
+    const rejectOrder = async (props: {
+        id: number;
+        onFail?: (msg?: string) => void;
+        onSuccess?: () => void;
+    }) => {
+        try {
+            openLoadingDialog?.();
+            await OrderServiceApi.rejectOrder({ id: props.id });
+            props.onSuccess?.();
+        } catch (err: any) {
+            let message = err?.response?.data.message || "";
+            props.onFail?.(message);
+            openAlertDialog?.("Thông báo", message || "Đã có lỗi xảy ra");
+
         } finally {
             closeLoadingDialog?.();
         }
     };
 
     const reload = () => {
-        setOrders([]);
-        setOrderOffset(0);
-        setForwardOffset(0);
+        getOrderList(true);
     };
 
     return {
@@ -69,6 +102,8 @@ export default function useStaffOrderList() {
         orders,
         getOrderList,
         readyOrder,
+        rejectOrder,
         reload,
+        user
     };
 }

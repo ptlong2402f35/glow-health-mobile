@@ -2,10 +2,10 @@ import http from "./http";
 
 export default class AuthService {
     public static async login(props: { phone: string; password: string }) {
-        console.log("phone", props.phone);
-        console.log("password", props.password);
+        console.log("phone === ", props.phone);
+        console.log("password ===", props.password);
         // let { data: test } = await http.get(
-        //     "https://english-center-backend.vercel.app//api/test"
+        //     "https://english-center-backend.vercel.app/api/test"
         // );
         // console.log("teset ===", test);
         const { data } = await http.post(`/auth/login`, {

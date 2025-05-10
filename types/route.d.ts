@@ -22,6 +22,10 @@ type RootStackParamList = {
     Review: undefined;
     OrderCreate: undefined;
     PaymentMethodSelect: undefined;
+    StaffOrderDetail: undefined;
+    RechargeView: undefined;
+    PaymentStatusView: undefined;
+    Topup: undefined;
 }
 
 declare global {

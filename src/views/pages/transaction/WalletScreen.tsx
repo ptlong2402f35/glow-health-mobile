@@ -8,6 +8,7 @@ import useUserLoader from "../../../hook/useUserLoader";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import BackButton from "../../../common/components/BackButton";
+import useRecharge from "./hook/useRecharge";
 export default function WalletScreen() {
     const { transactions, getMyTransaction, loadMore } =
         useTransactionHandler();
@@ -19,7 +20,9 @@ export default function WalletScreen() {
         loadMore();
     };
 
-    const recharge = () => {};
+    const onRecharge = async () => {
+        navigation.navigate("Topup");
+    };
 
     const supportClick = () => {
         navigation.navigate("Support");
@@ -38,7 +41,10 @@ export default function WalletScreen() {
                     {userLoader?.totalMoney || 0} đ
                 </Text>
                 <View style={walletStyles.actions}>
-                    <TouchableOpacity style={walletStyles.button}>
+                    <TouchableOpacity
+                        style={walletStyles.button}
+                        onPress={onRecharge}
+                    >
                         <Text style={walletStyles.buttonText}>Nạp tiền</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
