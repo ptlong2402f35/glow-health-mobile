@@ -24,7 +24,30 @@ export default function UseUserInfoHandler() {
         }
     }
 
+    const onUpdateProfile = async (props: {
+        name?: string;
+        gender?: number;
+        image?: string;
+        afterClose?: () => void;
+    }) => {
+        try {
+            openLoadingDialog?.();
+            await AuthService.updateProfile(props);
+            openAlertDialog?.("Thông báo", "Cập nhật thông tin thành công", ()=> {
+                props?.afterClose?.();
+            });
+        }
+        catch (err: any) {
+            let message = err?.response?.data.message || "";
+            openAlertDialog?.("Thông báo", message, ()=> {});
+        }
+        finally {
+            closeLoadingDialog?.();
+        }
+    }
+
     return {
-        onUpdatePassword
+        onUpdatePassword,
+        onUpdateProfile
     }
 }

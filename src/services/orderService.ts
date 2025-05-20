@@ -47,7 +47,7 @@ export default class OrderServiceApi {
         );
         console.log("data get my order === ", data);
         return {
-            docs: new Order().parseList(data.docs),
+            docs: data.docs.length ? new Order().parseList(data.docs) : [],
             pages: data.pages,
             currentPage: data.currentPage,
         };

@@ -42,9 +42,15 @@ export default class StaffServiceApi {
         return data.docs.length ? new Staff().parseList(data.docs) : [];
     }
 
+    public static async getPinnedStaffList(props: { id?: string }) {
+        const { data } = await http.get(`/pinned-staff/${props.id}`);
+        console.log("data /pinned staff list === ", data);
+        return new Staff().parseList(data);
+    }
+
     public static async getStaffDetail(props: { id: number }) {
         const { data } = await http.get(`/staff-detail/${props.id}`);
-        console.log("data /signup === ", data);
+        console.log("data /detail staff === ", data);
         return new Staff().parse(data);
     }
 
@@ -65,7 +71,7 @@ export default class StaffServiceApi {
             ...(props.images ? { images: props.images } : {}),
             ...(props.gender ? { gender: props.gender } : {}),
         };
-        const { data } = await http.put(`/staff/${props.id}`, body);
+        const { data } = await http.put(`/staff`, body);
         console.log("data /update staff === ", data);
         return data;
     }
@@ -94,42 +100,28 @@ export default class StaffServiceApi {
                 ? { serviceGroupId: props.serviceGroupId }
                 : {}),
         };
-        const { data } = await http.post(
-            `/staff-service-batch`,
-            body
-        );
+        const { data } = await http.post(`/staff-service-batch`, body);
         console.log("data /update staff service === ", data);
         return data;
     }
 
-    public static async updateStaffServiceBatch(props: {
-        data: any
-    }) {
+    public static async updateStaffServiceBatch(props: { data: any }) {
         let body = {
-            data: props.data.map((item:any) => ({
+            data: props.data.map((item: any) => ({
                 id: item.id,
-                prices: item.prices
-            }))
+                prices: item.prices,
+            })),
         };
-        const { data } = await http.put(
-            `/staff-service-batch-v2`,
-            body
-        );
+        const { data } = await http.put(`/staff-service-batch-v2`, body);
         console.log("data /update staff service === ", data);
         return data;
     }
 
-
-    public static async removeStaffService(props: {
-        id?: number;
-    }) {
-        const { data } = await http.delete(
-            `/staff-service-batch/${props.id}`
-        );
+    public static async removeStaffService(props: { id?: number }) {
+        const { data } = await http.delete(`/staff-service-batch/${props.id}`);
         console.log("data /update staff service === ", data);
         return data;
     }
-
 
     public static async registerStaff(props: {
         name?: string;
@@ -155,21 +147,14 @@ export default class StaffServiceApi {
             ...(props.type ? { type: props.type } : {}),
             ...(props.description ? { description: props.description } : {}),
         };
-        const { data } = await http.put(
-            `/staff-register`,
-            body
-        );
+        const { data } = await http.put(`/staff-register`, body);
         console.log("data /update staff register === ", data);
         return data;
     }
 
     public static async getStaffServiceBatch(props: {}) {
-        const { data } = await http.get(
-            `/staff-service-batch`
-        );
+        const { data } = await http.get(`/staff-service-batch`);
         console.log("data /update staff service batch === ", data);
-        return data.length ?new StaffService().parseList(data) : [];
+        return data.length ? new StaffService().parseList(data) : [];
     }
-
-    
 }

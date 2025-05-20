@@ -32,7 +32,6 @@ export default function StaffDetailScreen(props: { route?: any }) {
     const [isValidOrder, setIsValidOrder] = useState(false);
 
     const onClickOrder = (id: number, add: boolean) => {
-        console.log("Add ===", add);
         if (add) {
             setPriceIds([...priceIds, id]);
         } else {
@@ -108,7 +107,11 @@ export default function StaffDetailScreen(props: { route?: any }) {
             <ScrollView style={detailStaffStyles.container}>
                 {/* Banner */}
                 <Image
-                    source={DefaultAvatar}
+                    source={
+                        staff?.user?.urlImage
+                            ? { uri: staff?.user?.urlImage }
+                            : DefaultAvatar
+                    }
                     style={detailStaffStyles.imageWrap}
                     resizeMode="cover"
                 />

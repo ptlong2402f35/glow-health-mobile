@@ -21,7 +21,12 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.long9cdth.glowhealthmobile",
-      "usesCleartextTraffic": true
+      "usesCleartextTraffic": true,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyD2V4OXpWadIqvKQBLvpIejh8uXwGm8r80"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

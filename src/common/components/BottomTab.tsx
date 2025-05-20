@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -9,7 +9,7 @@ import {
 import HomeScreen from "../../views/pages/home/HomeScreen";
 import LoginScreen from "../../views/pages/login/LoginScreen";
 import SignUpScreen from "../../views/pages/login/SignupScreen";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation, useNavigationState } from "@react-navigation/native";
 import useBottomTab from "../../hook/useBottomTab";
 import useUserLoader from "../../hook/useUserLoader";
 import { StaffRole } from "../../models/Staff";
@@ -17,9 +17,12 @@ import { UserRole } from "../../models/User";
 
 export default function BottomTab() {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
+    const currentRouteName = useNavigationState((state) => {
+            const route = state.routes[state.index];
+            return route.name;
+        });
     const { tabName, changeTab } = useBottomTab();
     const { isLogin, userLoader } = useUserLoader();
-    console.log("======== ISLOGIN", isLogin);
     let role = userLoader?.role;
     let isStaff = role === UserRole.Staff;
 
@@ -28,6 +31,12 @@ export default function BottomTab() {
         changeTab?.(name);
         navigation.navigate(name as any);
     };
+
+    useEffect(() => {
+        if(tabName != currentRouteName) {
+            changeTab?.(currentRouteName);
+        }
+    }, [tabName]);
 
     return (
         <View
@@ -57,7 +66,7 @@ function TabButton(props: {
         <TouchableOpacity style={styles.tabButton} onPress={props.onPress}>
             <Text
                 style={{
-                    color: props.active ? "#2f95dc" : "#888",
+                    color: props.active ? "#2e7d32" : "#888",
                     fontWeight: props.active ? "bold" : "normal",
                 }}
             >

@@ -30,6 +30,7 @@ import {
     Topup,
     UpdatePassword,
     UserAccount,
+    UserInfoUpdate,
     Wallet
 } from "./statics/config";
 import HomeScreen from "./views/pages/home/HomeScreen";
@@ -58,6 +59,7 @@ import NotificationScreen from "./views/pages/notification/NotificationScreen";
 import PaymentResultScreen from "./views/pages/transaction/PaymentResultScreen";
 import RechargeScreen from "./views/pages/transaction/RechargeScreen";
 import TopUpScreen from "./views/pages/transaction/TopupScreen";
+import UserInfoUpdateScreen from "./views/pages/user/UserInfoUpdateScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -202,6 +204,11 @@ export default function Router() {
                     name={Topup}
                     options={{}}
                     component={TopUpScreen}
+                />
+                <Stack.Screen
+                    name={UserInfoUpdate}
+                    options={{}}
+                    component={UserInfoUpdateScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

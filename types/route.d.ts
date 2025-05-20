@@ -26,6 +26,7 @@ type RootStackParamList = {
     RechargeView: undefined;
     PaymentStatusView: undefined;
     Topup: undefined;
+    UserInfoUpdate: undefined;
 }
 
 declare global {

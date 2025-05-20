@@ -5,7 +5,8 @@ import mitt from "mitt";
 import { Socket } from "socket.io-client";
 
 export enum EmitterEvent {
-    ReloadStaffOrderList = "reloadStaffOrderList"
+    ReloadStaffOrderList = "reloadStaffOrderList",
+    ShowToast = "ShowToast",
 }
 
 export const emitter = mitt();

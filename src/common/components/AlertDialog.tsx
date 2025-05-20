@@ -12,6 +12,7 @@ const AlertDialog = (props: {
     open: boolean;
     title?: string | null;
     content?: string | null;
+    afterClose?: any;
     onClose?: any;
 }) => {
     return (
@@ -29,7 +30,10 @@ const AlertDialog = (props: {
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity
                                 style={styles.closeBtn}
-                                onPress={() => props.onClose?.()}
+                                onPress={() => {
+                                    props.onClose?.();
+                                    props.afterClose?.();
+                                }}
                             >
                                 <Text style={styles.buttonText}>Xác nhận</Text>
                             </TouchableOpacity>

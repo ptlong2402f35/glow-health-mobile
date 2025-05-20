@@ -450,14 +450,15 @@ export const orderCustomerDetailStyle = StyleSheet.create({
     },
     cancelBtn: {
         position: "absolute",
-        top: 12,
+        top: 22,
         right: 16,
         borderRadius: 12,
         paddingHorizontal: 16,
         paddingVertical: 4,
         borderWidth: 1,
         borderColor: "red",
-        backgroundColor: "red"
+        backgroundColor: "red",
+        zIndex: 999
     },
     cancelBtnText: {
         color: "#fff",

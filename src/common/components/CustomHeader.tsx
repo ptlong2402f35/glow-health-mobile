@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useUserLoader from "../../hook/useUserLoader";
+import { UserRole } from "../../models/User";
 const DefaultAvatar = require("../../../assets/defaultAvatar.png");
 
 const CustomHeader = (props: { avatarUrl?: string; name?: string }) => {
@@ -16,11 +17,11 @@ const CustomHeader = (props: { avatarUrl?: string; name?: string }) => {
 
     const customerSubTab = () => {
         if (!isLogin) navigation.navigate("Login");
-        if (userRole === 2) {
+        if (userRole === UserRole.Customer) {
             //navigation register
-            navigation.navigate("StaffInfoUpdate");
+            navigation.navigate("StaffInfoUpdate", {isRegister: true} as never);
         }
-        if (userRole === 3) {
+        if (userRole === UserRole.Staff) {
             //navi detail
             navigation.navigate("StaffInfoUpdate");
 

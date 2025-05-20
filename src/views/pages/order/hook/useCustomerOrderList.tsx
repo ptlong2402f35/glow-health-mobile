@@ -25,6 +25,8 @@ export default function useCustomerOrderList() {
             setOrders([...orders, ...docs]);
             setPage(currentPage);
         } catch (err: any) {
+            console.error(err);
+
             let message = err?.response?.data.message || "";
             openAlertDialog?.("Thông báo", message || "Đã có lỗi xảy ra");
         } finally {
@@ -47,6 +49,7 @@ export default function useCustomerOrderList() {
             setPage(currentPage);
             setMaxPage(pages);
         } catch (err: any) {
+            console.error(err);
             let message = err?.response?.data.message || "";
             openAlertDialog?.("Thông báo", message || "Đã có lỗi xảy ra");
         } finally {

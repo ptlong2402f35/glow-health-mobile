@@ -22,12 +22,18 @@ const data = [
         params: {
             groupService: "Massage",
             groupServiceId: 1,
+            bannerId: "massage-at-home"
         },
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxvaJdUHl-RzWQPtVKdPa4wNiLkV7SM--1Ig&s",
     },
     {
         id: 2,
         title: "Làm đẹp tại nhà",
+        params: {
+            groupService: "training",
+            groupServiceId: 1,
+            bannerId: "training-at-home"
+        },
         image: "https://glow-prod-images.s3.ap-southeast-1.amazonaws.com/spa-images/eafe4bbf-c6ad-496b-bd22-5587e74da7c8.png",
     },
     {
@@ -68,7 +74,7 @@ const HomeScreen = () => {
                         key={item.id}
                         style={styles.card}
                         onPress={() => {
-                            navigation.navigate("StaffList");
+                            navigation.navigate("StaffList", {id: item?.params?.bannerId || ""} as never);
                         }}
                     >
                         <Image

@@ -19,6 +19,7 @@ import useUserLoader from "../../../hook/useUserLoader";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useAttachUserLoader from "../../../common/useAttachUserLoader";
 import { UserRole } from "../../../models/User";
+import BottomTab from "../../../common/components/BottomTab";
 const DefaultAvatar = require("../../../../assets/defaultAvatar.png");
 
 export default function AccountScreen() {
@@ -49,7 +50,11 @@ export default function AccountScreen() {
                     </TouchableOpacity>
                 </View>
             ) : (
-                <ScrollView style={userAccountStyles.container}>
+                <ScrollView
+                    style={userAccountStyles.container}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    keyboardShouldPersistTaps="handled"
+                >
                     <View style={userAccountStyles.profileContainer}>
                         <Image
                             source={
@@ -72,7 +77,12 @@ export default function AccountScreen() {
                     <TouchableOpacity
                         style={userAccountStyles.card}
                         onPress={() => {
-                            navigation.navigate("StaffInfoUpdate", {isRegister: userLoader?.role === UserRole.Staff ? false : true} as never);
+                            navigation.navigate("StaffInfoUpdate", {
+                                isRegister:
+                                    userLoader?.role === UserRole.Staff
+                                        ? false
+                                        : true,
+                            } as never);
                         }}
                     >
                         <FontAwesome
@@ -81,7 +91,9 @@ export default function AccountScreen() {
                             color="black"
                         />
                         <Text style={userAccountStyles.cardText}>
-                            {userLoader?.role === UserRole.Staff ? 'Đối tác Glow - Thông tin chi tiết' : "Đăng kí đối tác Glow Health"}
+                            {userLoader?.role === UserRole.Staff
+                                ? "Đối tác Glow - Thông tin chi tiết"
+                                : "Đăng kí đối tác Glow Health"}
                         </Text>
                     </TouchableOpacity>
 
@@ -97,7 +109,12 @@ export default function AccountScreen() {
                         />
                     </View>
 
-                    <TouchableOpacity style={userAccountStyles.listItem} onPress={() => {navigation.navigate("MyOrderList")}}>
+                    <TouchableOpacity
+                        style={userAccountStyles.listItem}
+                        onPress={() => {
+                            navigation.navigate("MyOrderList");
+                        }}
+                    >
                         <Text style={userAccountStyles.listText}>
                             <FontAwesome
                                 name="history"
@@ -107,13 +124,23 @@ export default function AccountScreen() {
                             Lịch sử hoạt động
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={userAccountStyles.listItem} onPress={() => {navigation.navigate("Support")}}>
+                    <TouchableOpacity
+                        style={userAccountStyles.listItem}
+                        onPress={() => {
+                            navigation.navigate("Support");
+                        }}
+                    >
                         <Text style={userAccountStyles.listText}>
                             <Ionicons name="headset" size={22} />
                             Hỗ trợ
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={userAccountStyles.listItem} onPress={()=>{navigation.navigate("Wallet")}}>
+                    <TouchableOpacity
+                        style={userAccountStyles.listItem}
+                        onPress={() => {
+                            navigation.navigate("Wallet");
+                        }}
+                    >
                         <Text style={userAccountStyles.listText}>
                             <Ionicons name="wallet" size={22} />
                             Số dư Glow
@@ -122,7 +149,12 @@ export default function AccountScreen() {
                             {userLoader?.totalMoney || "0"} đ
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={userAccountStyles.listItem} onPress={()=>{navigation.navigate("CustomerAddressList")}}>
+                    <TouchableOpacity
+                        style={userAccountStyles.listItem}
+                        onPress={() => {
+                            navigation.navigate("CustomerAddressList");
+                        }}
+                    >
                         <Text style={userAccountStyles.listText}>
                             <FontAwesome
                                 name="map-marker"
@@ -132,13 +164,23 @@ export default function AccountScreen() {
                             Địa chỉ của tôi
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={userAccountStyles.listItem} onPress={()=>{navigation.navigate("MyCustomerDetail")}}>
+                    <TouchableOpacity
+                        style={userAccountStyles.listItem}
+                        onPress={() => {
+                            navigation.navigate("MyCustomerDetail");
+                        }}
+                    >
                         <Text style={userAccountStyles.listText}>
                             <AntDesign name="user" size={24} color="black" />
                             Thông tin cá nhân
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={userAccountStyles.listItem} onPress={()=>{navigation.navigate("UpdatePassword")}}>
+                    <TouchableOpacity
+                        style={userAccountStyles.listItem}
+                        onPress={() => {
+                            navigation.navigate("UpdatePassword");
+                        }}
+                    >
                         <Text style={userAccountStyles.listText}>
                             <AntDesign name="lock" size={24} color="black" />
                             Đổi mật khẩu
@@ -159,6 +201,7 @@ export default function AccountScreen() {
                     </TouchableOpacity>
                 </ScrollView>
             )}
+            <BottomTab />
         </View>
     );
 }

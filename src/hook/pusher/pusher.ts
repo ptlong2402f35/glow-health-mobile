@@ -1,16 +1,19 @@
 import Pusher from "pusher-js/react-native";
+import * as Device from "expo-device";
 
 import PusherService from "../../services/pusherService";
 import { getCurrentRouteName, navigationRef } from "../../NavigationService";
 import { StaffOrderList } from "../../statics/config";
 import { emitter, EmitterEvent } from "../emitter/mitt";
-
+import useToast from "../useToast";
+import {CommonComponentsWrapContext} from "../../common/commonComponentContextWrap"
 export default class PusherConfig {
     static instance: Pusher = new Pusher("d3c6fad28f3cf1931a88", {
         cluster: "ap1",
     });
     static channels: Set<string> = new Set();
     static isSub: boolean = false;
+    static ctx = CommonComponentsWrapContext;
     async init() {
         PusherConfig.instance.connection.bind("state_change", (states: any) => {
             const previousState = states.previous;
@@ -30,13 +33,13 @@ export default class PusherConfig {
             //   }
         });
 
-        console.log("xxxxx PUSHER init successfully!!!", PusherConfig.instance);
-
         return PusherConfig.instance;
     }
 
     async subcribe(userId?: number) {
         try {
+            console.log("pusher is sub", PusherConfig.isSub);
+            console.log("pusher is userId", userId);
             if (PusherConfig.isSub || !userId) return;
             console.log("pusher authentication userId", userId);
             if (userId) {
@@ -55,6 +58,14 @@ export default class PusherConfig {
                 channel.bind("login-success", () => {
                     console.log("LOGIN SUCCESS CONNECT PUSHER DONE");
                     alert("Pusher subscribe done");
+                });
+                channel.bind("notification", (data: any) => {
+                    if (!Device.isDevice) {
+                        console.log("notification data push ===", data);
+                        emitter.emit(EmitterEvent.ShowToast);
+                    }
+                    console.log("notification data push ===", data);
+                    emitter.emit(EmitterEvent.ShowToast, data);
                 });
 
                 PusherConfig.channels.add(`pusher-channel-${userId}`);

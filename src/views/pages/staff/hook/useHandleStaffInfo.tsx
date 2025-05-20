@@ -3,11 +3,46 @@ import AuthService from "../../../../services/authService";
 import Staff from "../../../../models/Staff";
 import StaffServiceApi from "../../../../services/staffServiceApi";
 import useLoadingDialog from "../../../../hook/useLoading";
+import LocationService from "../../../../services/locationService";
 
 export default function useHandleStaffInfo() {
     const [staff, setStaff] = useState<Staff | null>(null);
     const [staffImages, setStaffImages] = useState<any[]>([]);
+    const [image, setImage] = useState<any[]>([]);
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
+    const [provinceList, setProvinceList] = useState([{label: "Chọn thành phố", value: 1}]);
+    const [districtList, setDistrictList] = useState([{label: "Chọn thành phố trước", value: 0}]);
+    
+    const initProvinceList = async(search?: string) => {
+        try {
+            let data = await LocationService.getProvinceList({search: search || ""});
+            setProvinceList(data.map((item: any) => (
+                {
+                    label: item.name,
+                    value: item.id
+                }
+            )));
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+    const initDistrictList = async(search?: string, provinceId?: number) => {
+        try {
+            let data = await LocationService.getDistrictList({search: search || "", provinceId: provinceId});
+            setDistrictList(data.map((item: any) => (
+                {
+                    label: item.name,
+                    value: item.id
+                }
+            )));
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+    
 
     const staffGetInfo = async () => {
         try {
@@ -19,6 +54,7 @@ export default function useHandleStaffInfo() {
             }
             setStaff(data.staff);
             setStaffImages(images);
+            setImage(images);
         } catch (err) {
         } finally {
             closeLoadingDialog?.();
@@ -33,6 +69,7 @@ export default function useHandleStaffInfo() {
         districtId?: number;
         images?: string[];
         gender?: number;
+        description?: string;
     }) => {
         try {
             if (!props.id) return;
@@ -74,5 +111,11 @@ export default function useHandleStaffInfo() {
         staffImages,
         setStaffImages,
         registerStaff,
+        provinceList,
+        districtList,
+        initProvinceList,
+        initDistrictList,
+        image,
+        setImage
     };
 }

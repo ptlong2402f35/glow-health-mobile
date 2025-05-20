@@ -30,6 +30,7 @@ export default class User implements IModel<User> {
     resetKeyExpiredAt?: string | null;
     createdAt?: Date | null;
     updatedAt?: Date | null;
+    expoToken?: string | null;
     storeOwner?: Store | null;
     staff?: Staff | null;
     transactions?: Transaction[] | null;
@@ -54,6 +55,7 @@ export default class User implements IModel<User> {
         this.resetKeyExpiredAt = input?.resetKeyExpiredAt || null;
         this.createdAt = input?.createdAt || null;
         this.updatedAt = input?.updatedAt || null;
+        this.expoToken = input?.expoToken || null;
         this.storeOwner = input?.storeOwner || null;
         this.staff = input?.staff || null;
         this.transactions = input?.transactions || null;

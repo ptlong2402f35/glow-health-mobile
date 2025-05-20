@@ -79,7 +79,7 @@ export const detailStaffStyles = StyleSheet.create({
     },
     imageWrap: {
         width: screenWidth - 24,
-        height: 200,
+        height: 260,
         borderRadius: 12,
         marginTop: 10,
         alignSelf: "center",
@@ -180,25 +180,36 @@ export const detailStaffStyles = StyleSheet.create({
 });
 
 export const staffInfoUpdateStyle = StyleSheet.create({
-    container: { padding: 16, backgroundColor: "#fff" },
+    container: { padding: 16, backgroundColor: "#fff", flex: 1 },
     toggleContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
         marginBottom: 10,
     },
     toggleText: { fontSize: 16 },
-    sectionTitle: { fontSize: 18, fontWeight: "bold", marginVertical: 10 },
+    titleContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    sectionTitle: { fontSize: 24, fontWeight: "bold", marginVertical: 10 },
     imageRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         marginVertical: 10,
+        flexWrap: "wrap",
     },
-    avatar: { width: 60, height: 60, borderRadius: 8 },
+    avatar: { width: "100%", height: "100%" },
     placeholder: {
-        width: 60,
-        height: 60,
-        backgroundColor: "#eee",
-        borderRadius: 8,
+        width: screenWidth * 0.3,
+        height: screenWidth * 0.3,
+        borderRadius: 10,
+        overflow: "hidden",
+        marginBottom: 10,
+        backgroundColor: "#ccc",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
     },
     note: { fontSize: 12, color: "#555" },
     input: {
@@ -213,10 +224,16 @@ export const staffInfoUpdateStyle = StyleSheet.create({
         borderColor: "#ccc",
         borderRadius: 6,
         padding: 10,
-        height: 80,
+        minHeight: 100,
     },
     label: { marginTop: 10, fontWeight: "bold" },
-    picker: { borderWidth: 1, borderColor: "#ccc", borderRadius: 6 },
+    picker: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 6,
+        paddingLeft: 4, 
+        paddingRight: 4,
+    },
     row: { flexDirection: "row", alignItems: "center", marginVertical: 6 },
     radio: {
         marginLeft: 10,

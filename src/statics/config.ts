@@ -27,3 +27,4 @@ export const PaymentMethodSelect = "PaymentMethodSelect";
 export const RechargeView = "RechargeView";
 export const PaymentStatusView = "PaymentStatusView";
 export const Topup = "Topup";
+export const UserInfoUpdate = "UserInfoUpdate";

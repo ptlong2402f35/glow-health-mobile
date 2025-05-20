@@ -15,18 +15,15 @@ import useCustomerOrderDetail from "./hook/useCustomerOrderDetail";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Order from "../../../models/Order";
 import OrderForwarder from "../../../models/OrderForwarder";
+import BackButton from "../../../common/components/BackButton";
 const defaultAvatar = require("../../../../assets/defaultAvatar.png");
 
 export default function OrderCustomerPendingScreen(props: { route: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     let id = props.route.params?.id || 0;
 
-    const {
-        order,
-        forwardOrder,
-        getForwardOrder,
-        cancelOrderByCustomer,
-    } = useCustomerOrderDetail();
+    const { order, forwardOrder, getForwardOrder, cancelOrderByCustomer } =
+        useCustomerOrderDetail();
 
     const onCancelOrder = () => {
         cancelOrderByCustomer(id, () => {
@@ -39,7 +36,7 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
             id: staffId,
             forwardSelect: true,
             baseOrderId: id,
-            forwardId: forwardOrderId
+            forwardId: forwardOrderId,
         } as never);
     };
 
@@ -50,31 +47,29 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
 
     return (
         <View style={orderCustomerDetailStyle.container}>
+            <BackButton/>
             <TouchableOpacity
                 style={orderCustomerDetailStyle.cancelBtn}
                 onPress={onCancelOrder}
             >
                 <Text style={orderCustomerDetailStyle.cancelBtnText}>Hủy</Text>
             </TouchableOpacity>
-            <View style={orderCustomerDetailStyle.map}></View>
-            {/* <MapView
-        style={orderCustomerDetailStyle.map}
-        initialRegion={{
-          latitude: 21.010499,
-          longitude: 105.800509,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}>
-        <Marker
-          coordinate={{ latitude: 21.010499, longitude: 105.800509 }}
-          title="Kỹ thuật viên"
-        >
-          <Image
-            source={defaultAvatar} 
-            style={{ width: 32, height: 32 }}
-          />
-        </Marker>
-      </MapView> */}
+            {/* <View style={orderCustomerDetailStyle.map}></View> */}
+            <MapView
+                style={orderCustomerDetailStyle.map}
+                initialRegion={{
+                    latitude: 10.762622,
+                    longitude: 106.660172,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                }}
+            >
+                <Marker
+                    coordinate={{ latitude: 10.762622, longitude: 106.660172 }}
+                    title="Địa điểm"
+                    description="Trường ĐH Bách Khoa TP.HCM"
+                />
+            </MapView>
 
             <View style={orderCustomerDetailStyle.bottomSheet}>
                 <Text style={orderCustomerDetailStyle.alert}>

@@ -3,6 +3,7 @@ import useLoadingDialog from "../../../../hook/useLoading";
 import AuthService from "../../../../services/authService";
 import useUserLoader from "../../../../hook/useUserLoader";
 import PusherConfig from "../../../../hook/pusher/pusher";
+import { getExpoToken } from "../../../../hook/expoToken/expoToken";
 
 export default function useHandleLogin() {
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
@@ -16,9 +17,11 @@ export default function useHandleLogin() {
     }) => {
         openLoadingDialog?.();
         try {
+            let eToken = await getExpoToken();
             let resp = await AuthService.login({
                 phone: data.phone,
                 password: data.password,
+                expoToken: eToken
             });
             console.log("resp login", resp);
             // console.log("resp login parse", JSON.parse(resp));
@@ -32,6 +35,7 @@ export default function useHandleLogin() {
         } catch (err: any) {
             let message = err?.response?.data.message || "";
             data?.onFail?.(message);
+            console.log("message ===", err);
         } finally {
             closeLoadingDialog?.();
         }

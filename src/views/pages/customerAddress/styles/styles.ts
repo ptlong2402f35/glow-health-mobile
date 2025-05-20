@@ -5,16 +5,26 @@ export const CustomerAddressListStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#f5f5f5",
+        minHeight: height,
+    },
+    headerWrap: {
+        backgroundColor: "#4F7942",
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
     },
     header: {
         fontSize: 20,
         fontWeight: "bold",
-        margin: 16,
         textAlign: "center",
+        color: "#fff"
     },
     addressList: {
+        flex: 1,
         paddingHorizontal: 16,
-        minHeight: height * 0.75,
+        minHeight: height * 0.85,
 
     },
     addressEmptyWrap: {

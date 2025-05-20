@@ -8,7 +8,7 @@ export const notificationStyles = StyleSheet.create({
     emptyScreen: {
         display: "flex",
         justifyContent: "center",
-        alignContent: "center",
+        alignItems: "center",
         flex: 1,
     },
     header: {

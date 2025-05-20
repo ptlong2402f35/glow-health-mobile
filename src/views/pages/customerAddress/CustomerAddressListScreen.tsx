@@ -37,8 +37,10 @@ export default function CustomerAddressListScreen(props: { route?: any }) {
     };
 
     const onAddressClick = (item: CustomerAddress) => {
-        if(!fromCreateOrder) return;
-        navigation.navigate("OrderCreate", { data: { ...orderData, addressId: item.id, address: item.address } } as never);
+        if (!fromCreateOrder) return;
+        navigation.navigate("OrderCreate", {
+            data: { ...orderData, addressId: item.id, address: item.address },
+        } as never);
     };
 
     const loadNextPage = () => {};
@@ -48,10 +50,12 @@ export default function CustomerAddressListScreen(props: { route?: any }) {
     }, []);
     return (
         <View style={CustomerAddressListStyles.container}>
-            <BackButton />
-            <Text style={CustomerAddressListStyles.header}>
-                Địa chỉ của tôi
-            </Text>
+            <BackButton color="#fff" top={10} />
+            <View style={CustomerAddressListStyles.headerWrap}>
+                <Text style={CustomerAddressListStyles.header}>
+                    Địa chỉ của tôi
+                </Text>
+            </View>
             <View style={CustomerAddressListStyles.addressList}>
                 {addresses?.length === 0 ? (
                     <View style={CustomerAddressListStyles.addressEmptyWrap}>
@@ -75,15 +79,15 @@ export default function CustomerAddressListScreen(props: { route?: any }) {
                         onEndReached={() => loadNextPage()}
                     />
                 )}
+                <TouchableOpacity
+                    style={CustomerAddressListStyles.addButton}
+                    onPress={() => onUpdateAddress(null, true)}
+                >
+                    <Text style={CustomerAddressListStyles.addText}>
+                        Thêm địa chỉ
+                    </Text>
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity
-                style={CustomerAddressListStyles.addButton}
-                onPress={() => onUpdateAddress(null, true)}
-            >
-                <Text style={CustomerAddressListStyles.addText}>
-                    Thêm địa chỉ
-                </Text>
-            </TouchableOpacity>
         </View>
     );
 }

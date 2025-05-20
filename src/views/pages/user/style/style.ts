@@ -24,6 +24,7 @@ export const userAccountStyles = StyleSheet.create({
         backgroundColor: "#f6f6f6",
         padding: 16,
         flex: 1,
+        height: "100%"
     },
     profileContainer: {
         flexDirection: "row",
