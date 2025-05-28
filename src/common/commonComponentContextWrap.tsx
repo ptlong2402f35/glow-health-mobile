@@ -4,7 +4,10 @@ import LoadingDialog from "./components/LoadingDialog";
 import useAttachAlertDialog from "./useAttachAlertDialog";
 import AlertDialog from "./components/AlertDialog";
 import useAttachBottomTab from "./useAttachBottomTab";
-import useAttachUserLoader, { UserLoader } from "./useAttachUserLoader";
+import useAttachUserLoader, {
+    GeoLocation,
+    UserLoader,
+} from "./useAttachUserLoader";
 import User from "../models/User";
 import Toast from "react-native-toast-message";
 import useAttachToast from "./useAttachToast";
@@ -33,6 +36,7 @@ export type CommonComponentsWrapContextType = {
         changeTab: (name: string) => void;
     };
     userLoader?: UserLoader | null;
+    location?: GeoLocation | null;
     isLogin?: boolean;
     reloadMe?: () => Promise<void>;
     user?: User | null;
@@ -77,6 +81,9 @@ export default function CommonComponentsWrap(props: {
         me: reloadMe,
         logout,
         user,
+        provideDeviceLocationPermission,
+        provideDeviceNotificationPermission,
+        location,
     } = useAttachUserLoader({});
     const { showToast } = useAttachToast({ toast: Toast });
     const { refresh, onRefresh } = useRefreshScreen();
@@ -89,7 +96,16 @@ export default function CommonComponentsWrap(props: {
                 shouldSetBadge: false,
             }),
         });
+        Notifications.setNotificationChannelAsync("default", {
+            name: "Default",
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: "#FF231F7C",
+        });
         emitter.on(EmitterEvent.ShowToast, (data: any) => showToast(data));
+        provideDeviceLocationPermission();
+        provideDeviceNotificationPermission();
+
         return () => {
             emitter.off(EmitterEvent.ShowToast, (data: any) => showToast(data));
         };
@@ -117,7 +133,8 @@ export default function CommonComponentsWrap(props: {
                 user,
                 showToast,
                 refresh,
-                onRefresh
+                onRefresh,
+                location,
             }}
         >
             {props.children}

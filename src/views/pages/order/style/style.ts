@@ -121,7 +121,8 @@ export const orderDetailStyles = StyleSheet.create({
         padding: 16,
         backgroundColor: "#fff",
         minHeight: Dimensions.get("window").height,
-        position:"relative"
+        position:"relative",
+        paddingBottom: 26
     },
     header: {
         flexDirection: "row",
@@ -225,20 +226,22 @@ export const orderDetailStyles = StyleSheet.create({
     },
     btnWrapper: {
         position: "absolute",
-        bottom: 12,
+        bottom: 36,
         left:16,
         right: 16,
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         flexDirection: "row",
         alignItems: "center",
+        width: "100%",
+        gap: 12,
     },
     readyCancelBtn: {
         paddingVertical: 12,
         paddingHorizontal: 32,
         borderRadius: 24,
         backgroundColor: "#ccc",
-        minWidth: Dimensions.get("window").width * 0.45,
+        minWidth: Dimensions.get("window").width * 0.4,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: "center"
@@ -248,7 +251,7 @@ export const orderDetailStyles = StyleSheet.create({
         paddingHorizontal: 32,
         borderRadius: 24,
         backgroundColor: "green",
-        minWidth: Dimensions.get("window").width * 0.45,
+        minWidth: Dimensions.get("window").width * 0.4,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: "center"
@@ -262,6 +265,7 @@ export const customerOrderDetailStyle = StyleSheet.create({
     container: {
         padding: 20,
         backgroundColor: "#fff",
+        flex: 1
     },
     header: {
         fontSize: 22,
@@ -446,7 +450,7 @@ export const orderCustomerDetailStyle = StyleSheet.create({
     },
     map: {
         width: "100%",
-        height: Dimensions.get("window").height * 0.5,
+        height: Dimensions.get("window").height * 0.45,
     },
     cancelBtn: {
         position: "absolute",
@@ -479,17 +483,19 @@ export const orderCustomerDetailStyle = StyleSheet.create({
     forwardListContainer: {
         display: "flex",
         flexDirection:"row",
+        marginVertical: 12,
+        marginHorizontal: 12
     },
     illustration: {
-        width: 120,
+        width: "100%",
         height: 120,
-        marginBottom: 16,
+        // objectFit: "contain"
     },
     message: {
         fontSize: 16,
         color: "#444",
         textAlign: "center",
-        marginBottom: 30,
+        // marginBottom: 30,
     },
     supportButton: {
         flexDirection: "row",
@@ -507,7 +513,16 @@ export const orderCustomerDetailStyle = StyleSheet.create({
     forwardStaffContainer: {
         borderWidth: 1,
         borderColor: "#ccc",
-        borderRadius: 12
+        borderRadius: 12,
+        overflow: "hidden",
+    },
+    itemContainer: {
+        padding: 8
+    },
+    itemContainerFlex: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
     }
 });
 
@@ -546,6 +561,11 @@ export const customerOrderListStyles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 6,
     },
+    infoRowPrice: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
     infoText: {
         marginLeft: 8,
         fontSize: 14,
@@ -582,6 +602,10 @@ export const orderCreateScreenStyle = StyleSheet.create({
         flex: 1,
         padding: 20,
         backgroundColor: "#fff",
+        // display: "flex",
+        // flexDirection: "column",
+        // justifyContent: "space-between",
+        // height: Dimensions.get("window").height,
     },
     headerContainer: {
         display: "flex",
@@ -646,6 +670,10 @@ export const orderCreateScreenStyle = StyleSheet.create({
     balanceWrap: {
         padding: 8,
         backgroundColor: "#fff",
+        position: "absolute",
+        bottom: 28,
+        left: 20,
+        right: 20,
     },
     balanceContainer: {
         marginBottom: 20,

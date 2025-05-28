@@ -7,6 +7,7 @@ import StaffServiceApi from "../../../../services/staffServiceApi";
 import Staff from "../../../../models/Staff";
 
 export default function useHandleStaffList() {
+    const {location} = useUserLoader();
     const [staffs, setStaffs] = useState<Staff[]>([]);
     const [pinnedstaffs, setPinnedStaffs] = useState<Staff[]>([]);
 
@@ -15,6 +16,9 @@ export default function useHandleStaffList() {
             let resp = await StaffServiceApi.getStaffList({
                 page: data?.page,
                 perPage: data?.perPage,
+                useCoordinate: (location?.lat || location?.long) ? true : false,
+                coordinateLat: location?.lat || 0,
+                coordinateLong: location?.long || 0
             });
 
             console.log("staff list ===", resp);

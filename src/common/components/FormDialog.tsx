@@ -33,7 +33,7 @@ const FormDialog = (props: {
                                 <Text style={styles.buttonText}>Đóng</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={styles.closeBtn}
+                                style={styles.confirmBtn}
                                 onPress={() => props.onConfirm?.()}
                             >
                                 <Text style={styles.buttonText}>Xác nhận</Text>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     modalContainer: {
-        width: 300,
+        width: 350,
         padding: 20,
         backgroundColor: "white",
         borderRadius: 10,

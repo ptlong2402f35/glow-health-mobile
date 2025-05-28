@@ -17,6 +17,7 @@ import useRefresh from "../../../hook/useRefresh";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import useImagePicker from "../../../hook/useImagePicker";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function StaffInfoUpdateScreen(props?: { route?: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -40,7 +41,7 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
         initProvinceList,
         initDistrictList,
         image,
-        setImage
+        setImage,
     } = useHandleStaffInfo();
     const { imagePicker, uploadBulkImage } = useImagePicker();
 
@@ -63,6 +64,7 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
     const onAddImage = async () => {
         console.log("onADD");
         let resp = await imagePicker();
+        if (!resp) return;
         console.log("resp ===", resp?.uri);
         console.log("on add xxx", staffImages);
         let tmp = [];
@@ -91,10 +93,20 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
         setImage(tmpObj);
     };
 
-    const onUpdateImage = async (index?: number) => {
+    const onUpdateImage = async (index?: number, isDelete?: boolean) => {
         if (!index && index != 0) return;
         console.log("on update", index);
+        if (isDelete) {
+            let tmp = [...staffImages];
+            let tmpObj = [...image];
+            tmp[index] = null;
+            tmpObj[index] = null;
+            setStaffImages(tmp);
+            setImage(tmpObj);
+            return;
+        }
         let resp = await imagePicker();
+        if (!resp) return;
         console.log("resp ===", resp?.uri);
 
         let tmp = [...staffImages];
@@ -113,25 +125,29 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
         console.log("gender", gender);
         let uploadImages = [];
 
-        navigation.navigate("StaffServiceUpdate");
+        // navigation.navigate("StaffServiceUpdate");
 
-        // return test
-        return;
-        if(image && image.length) {
-            uploadImages = await uploadBulkImage(image.filter(val => typeof val != "string").filter(val => val));
+        // // return test
+        // return;
+        if (image && image.length) {
+            uploadImages = await uploadBulkImage(
+                image
+                    .filter((val) => typeof val != "string")
+                    .filter((val) => val)
+            );
         }
         let idx = 0;
-        let idxList = 0;
-        let finalImages = [...image].filter(val => val);
-        console.log("xxxx", uploadImages);
-        for(let _ of finalImages) {
-            if(typeof finalImages[idxList] != "string") {
+        let idxList = 1;
+        let finalImages = [...image].filter((val) => val);
+        console.log("xxxx", finalImages);
+        for (let _ of finalImages) {
+            if (typeof finalImages[idxList] != "string" && uploadImages[idx]) {
                 finalImages[idxList] = uploadImages[idx];
                 idx++;
             }
             idxList++;
         }
-
+        finalImages.shift();
         console.log("finishImages", finalImages);
 
         if (isRegister) {
@@ -146,8 +162,10 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
             districtId: district,
             gender: gender,
             description,
-            images: finalImages
+            images: finalImages,
         });
+
+        navigation.navigate("StaffServiceUpdate");
     };
 
     const register = (images?: string[]) => {
@@ -174,7 +192,7 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
         if (city === 0) return;
         initDistrictList("", city);
     }, [city]);
-    console.log("images ===", image.filter(val =>val).length);
+    console.log("images ===", image.filter((val) => val).length);
     useEffect(() => {
         setName(staff?.name || "");
         setAge(staff?.age || 1);
@@ -204,21 +222,35 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
             <View style={staffInfoUpdateStyle.imageRow}>
                 {staffImages.map((image, index) =>
                     image ? (
-                        <TouchableOpacity
+                        <View
                             key={index + "image"}
                             style={staffInfoUpdateStyle.placeholder}
-                            onPress={() => onUpdateImage(index)}
                         >
-                            <Image
-                                source={{ uri: image }}
-                                style={staffInfoUpdateStyle.avatar}
+                            <AntDesign
+                                style={staffInfoUpdateStyle.deleteIcon}
+                                name="closecircle"
+                                size={18}
+                                color="red"
+                                onPress={() => onUpdateImage(index, true)}
                             />
-                        </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => onUpdateImage(index)}
+                                style={[staffInfoUpdateStyle.placeholderInit]}
+                            >
+                                <Image
+                                    source={{ uri: image }}
+                                    style={staffInfoUpdateStyle.avatar}
+                                />
+                            </TouchableOpacity>
+                        </View>
                     ) : (
                         <TouchableOpacity
                             key={index + "image"}
                             onPress={onAddImage}
-                            style={staffInfoUpdateStyle.placeholder}
+                            style={[
+                                staffInfoUpdateStyle.placeholder,
+                                staffInfoUpdateStyle.placeholderInit,
+                            ]}
                         >
                             <Ionicons
                                 name="add-sharp"
@@ -230,7 +262,7 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
                 )}
             </View>
 
-            {/* Form thông tin */}
+            <Text style={staffInfoUpdateStyle.label}>Họ tên</Text>
             <TextInput
                 style={staffInfoUpdateStyle.input}
                 placeholder="Tên của bạn"

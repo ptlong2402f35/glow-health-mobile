@@ -41,10 +41,10 @@ export default function useCustomerOrderDetail() {
         }
     }
 
-    const getForwardOrder = async (orderId: number) => {
+    const getForwardOrder = async (orderId: number, lat?: number | null, long?: number | null) => {
         try {
             openLoadingDialog?.();
-            let forwardOrders = await OrderServiceApi.getForwardOrders({id: orderId});
+            let forwardOrders = await OrderServiceApi.getForwardOrders({id: orderId, lat, long});
             setForwardOrder(forwardOrders);
         }
         catch (err: any) {

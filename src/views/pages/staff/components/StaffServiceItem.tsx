@@ -13,12 +13,12 @@ export default function StaffServiceItem(props: {
     priceIds?: number[];
     setPriceIds?: (data: number[]) => void;
 }) {
-    let allIds = props.staffService?.prices?.map((item) => item.id) || [];
+    let allIds = props.staffService?.prices?.map((item) => item?.id) || [];
     const [priceId, setPriceId] = useState(
-        props.staffService.prices?.[0].id || 0
+        props.staffService.prices?.[0]?.id || 0
     );
     const [price, setPrice] = useState<number>(
-        props.staffService.prices?.[0].price || 0
+        props.staffService.prices?.[0]?.price || 0
     );
     const [isOrder, setIsOrder] = useState(false);
     const onChosePrice = (id: number, price: number) => {
@@ -56,7 +56,7 @@ export default function StaffServiceItem(props: {
                 <View style={detailStaffStyles.pricesBtnWrap}>
                     {props.staffService?.prices?.map((price, i) => (
                         <StaffPriceButton
-                            key={i}
+                            key={price?.id || i}
                             price={price}
                             onChosePrice={onChosePrice}
                             chosePriceId={priceId}
@@ -87,7 +87,7 @@ export function StaffPriceButton(props: {
         <View>
             <TouchableOpacity
                 style={
-                    props.price.id === props.chosePriceId
+                    props.price?.id === props.chosePriceId
                         ? [detailStaffStyles.button, detailStaffStyles.choseBtn]
                         : detailStaffStyles.button
                 }

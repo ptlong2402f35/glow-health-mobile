@@ -34,7 +34,7 @@ export default function useCustomerOrderList() {
         }
     };
 
-    const initLoad = async () => {
+    const initLoad = async (reload?: boolean) => {
         try {
             openLoadingDialog?.();
             let {
@@ -42,7 +42,7 @@ export default function useCustomerOrderList() {
                 pages,
                 currentPage
             } = await OrderServiceApi.getCustomerOrderList({
-                page
+                page: reload ? 1 : page
             });
 
             setOrders([...docs]);

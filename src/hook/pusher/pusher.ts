@@ -3,7 +3,7 @@ import * as Device from "expo-device";
 
 import PusherService from "../../services/pusherService";
 import { getCurrentRouteName, navigationRef } from "../../NavigationService";
-import { StaffOrderList } from "../../statics/config";
+import { MyOrderDetail, MyOrderPendingDetail, StaffOrderList } from "../../statics/config";
 import { emitter, EmitterEvent } from "../emitter/mitt";
 import useToast from "../useToast";
 import {CommonComponentsWrapContext} from "../../common/commonComponentContextWrap"
@@ -54,6 +54,40 @@ export default class PusherConfig {
                         emitter.emit(EmitterEvent.ReloadStaffOrderList);
                     }
                     // console.log(JSON.stringify(data));
+                });
+                channel.bind("reload-detail-order", function (data: any) {
+                    console.log(`Event data: ${JSON.stringify(data)}`);
+                    console.log(`current screen:`, getCurrentRouteName());
+                    if (getCurrentRouteName() === MyOrderDetail) {
+                        console.log("force reload staff order list =====");
+                        emitter.emit(EmitterEvent.ReloadStaffOrderList);
+                    }
+                    // console.log(JSON.stringify(data));
+                });
+                channel.bind("redirect-screen-in-pending", function (data: any) {
+                    console.log(`Event data: ${JSON.stringify(data)}`);
+                    console.log(`current screen:`, getCurrentRouteName());
+                    if (getCurrentRouteName() === MyOrderPendingDetail) {
+                        emitter.emit(EmitterEvent.Redirect, data);
+                    }
+                    // console.log(JSON.stringify(data));
+                });
+                channel.bind("order-ready-to-customer", function (data: any) {
+                    console.log(`Event data: ${JSON.stringify(data)}`);
+                    console.log(`current screen:`, getCurrentRouteName());
+                    if (getCurrentRouteName() === MyOrderPendingDetail) {
+                        emitter.emit(EmitterEvent.ReloadForwardOrder, data);
+                    }
+                });
+                channel.bind("order-switch-to-staff", function (data: any) {
+                    console.log(`Event data: ${JSON.stringify(data)}`);
+                    console.log(`current screen:`, getCurrentRouteName());
+                    emitter.emit(EmitterEvent.Redirect, data);
+                });
+                channel.bind("redirect-screen", function (data: any) {
+                    console.log(`Event data: ${JSON.stringify(data)}`);
+                    console.log(`current screen:`, getCurrentRouteName());
+                    emitter.emit(EmitterEvent.Redirect, data);
                 });
                 channel.bind("login-success", () => {
                     console.log("LOGIN SUCCESS CONNECT PUSHER DONE");

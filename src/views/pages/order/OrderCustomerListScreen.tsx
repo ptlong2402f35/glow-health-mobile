@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
 import { customerOrderListStyles } from "./style/style";
 import Order, { OrderStatus } from "../../../models/Order";
 import useCustomerOrderList from "./hook/useCustomerOrderList";
@@ -16,12 +16,20 @@ import {
 import moment from "moment";
 import BackButton from "../../../common/components/BackButton";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import useRefresh from "../../../hook/useRefresh";
 
 export default function OrderCustomerListScreen(props: {route: any}) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     let reload = props.route.params?.reload || null;
     const { orders, loadMore, getOrderList, initLoad } = useCustomerOrderList();
+    const { refresh, onRefresh } = useRefresh();
 
+    const onRefreshScreen = () => {
+        const cb = async () => {
+            initLoad(true);
+        };
+        onRefresh(cb);
+    };
     const onClickDetailOrder = (item: Order) => {
         if(item.status === OrderStatus.Pending) {
             navigation.navigate("MyOrderPendingDetail", {id: item.id} as never);
@@ -32,10 +40,10 @@ export default function OrderCustomerListScreen(props: {route: any}) {
 
     useEffect(() => {
         if(reload) {
-            initLoad();
+            initLoad(true);
             return;
         }
-        initLoad();
+        initLoad(true);
     }, [reload]);
     return (
         <View>
@@ -53,6 +61,12 @@ export default function OrderCustomerListScreen(props: {route: any}) {
                     contentContainerStyle={{ padding: 16 }}
                     onEndReached={loadMore}
                     onEndReachedThreshold={0.5}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refresh || false}
+                            onRefresh={onRefreshScreen}
+                        />
+                    }
                 />
             ) : (
                 <View style={customerOrderListStyles.emptyWrapper}>
@@ -70,6 +84,10 @@ export function OrderItem(props: { item: Order , onPress?:(item: Order) => void}
     let color = "";
     switch (props?.item?.status) {
         case OrderStatus.Pending: {
+            color = "#28a745";
+            break;
+        }
+        case OrderStatus.Approved: {
             color = "#28a745";
             break;
         }
@@ -113,7 +131,7 @@ export function OrderItem(props: { item: Order , onPress?:(item: Order) => void}
                     </Text>
                 </View>
                 <Text style={customerOrderListStyles.price}>
-                    {props?.item.totalPay}
+                    {props?.item.totalPay}đ
                 </Text>
             </View>
             <View style={customerOrderListStyles.infoRow}>
@@ -128,12 +146,12 @@ export function OrderItem(props: { item: Order , onPress?:(item: Order) => void}
                     size={24}
                     color="black"
                 />
-                <View>
+                <View style={{width: "90%"}}>
                     {props?.item?.prices?.length ? (
                         props?.item.prices?.map((price) => (
                             <View
                                 key={price.id}
-                                style={customerOrderListStyles.infoText}
+                                style={[customerOrderListStyles.infoText, customerOrderListStyles.infoRowPrice]}
                             >
                                 <Text style={customerOrderListStyles.infoText}>
                                     {price?.staffService?.name || ""}

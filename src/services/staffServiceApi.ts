@@ -1,4 +1,5 @@
 import { DefaultModel } from "../models/IModel";
+import ServiceGroup from "../models/ServiceGroup";
 import Staff from "../models/Staff";
 import StaffService from "../models/StaffService";
 import StaffServicePrice from "../models/StaffServicePrice";
@@ -15,6 +16,7 @@ export default class StaffServiceApi {
         coordinateLong?: number;
         storeId?: number;
         coordinateDistance?: number;
+        search?: string;
     }) {
         const params: any = {
             ...(props?.page ? { page: props?.page } : {}),
@@ -106,19 +108,14 @@ export default class StaffServiceApi {
     }
 
     public static async updateStaffServiceBatch(props: { data: any }) {
-        let body = {
-            data: props.data.map((item: any) => ({
-                id: item.id,
-                prices: item.prices,
-            })),
-        };
-        const { data } = await http.put(`/staff-service-batch-v2`, body);
+        let body = props.data;
+        const { data } = await http.put(`/staff-service-batch`, body);
         console.log("data /update staff service === ", data);
         return data;
     }
 
     public static async removeStaffService(props: { id?: number }) {
-        const { data } = await http.delete(`/staff-service-batch/${props.id}`);
+        const { data } = await http.delete(`/staff-service/${props.id}`);
         console.log("data /update staff service === ", data);
         return data;
     }
@@ -154,7 +151,13 @@ export default class StaffServiceApi {
 
     public static async getStaffServiceBatch(props: {}) {
         const { data } = await http.get(`/staff-service-batch`);
-        console.log("data /update staff service batch === ", data);
-        return data.length ? new StaffService().parseList(data) : [];
+        let x: any = [];
+        for (let item of data) {
+            for (let i2 of item.services) {
+                x.push(...i2.price);
+            }
+        }
+        console.log("data /update staff service batch === ", x);
+        return data.length ? new ServiceGroup().parseList(data) : [];
     }
 }

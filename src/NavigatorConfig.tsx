@@ -1,5 +1,7 @@
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+    NavigationContainer,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./views/pages/login/LoginScreen";
 import SignUpScreen from "./views/pages/login/SignupScreen";
@@ -31,7 +33,7 @@ import {
     UpdatePassword,
     UserAccount,
     UserInfoUpdate,
-    Wallet
+    Wallet,
 } from "./statics/config";
 import HomeScreen from "./views/pages/home/HomeScreen";
 import IconLoadingScreen from "./views/pages/init/IconLoadingScreen";
@@ -60,10 +62,22 @@ import PaymentResultScreen from "./views/pages/transaction/PaymentResultScreen";
 import RechargeScreen from "./views/pages/transaction/RechargeScreen";
 import TopUpScreen from "./views/pages/transaction/TopupScreen";
 import UserInfoUpdateScreen from "./views/pages/user/UserInfoUpdateScreen";
+import { emitter, EmitterEvent } from "./hook/emitter/mitt";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function Router() {
+    React.useEffect(() => {
+        console.log("xxxxxx EMIT ON redirect event xxxxx")
+        emitter.on(EmitterEvent.Redirect, (data: any) => {
+            console.log("redirect pusher data ====", data);
+            navigationRef.navigate(data.screen || "Home", data.params || {});
+        });
+
+        return () => {
+            emitter.off(EmitterEvent.Redirect);
+        };
+    }, []);
     return (
         <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
@@ -213,4 +227,8 @@ export default function Router() {
             </Stack.Navigator>
         </NavigationContainer>
     );
+}
+
+export function RouterChild() {
+
 }

@@ -24,7 +24,8 @@ export const userAccountStyles = StyleSheet.create({
         backgroundColor: "#f6f6f6",
         padding: 16,
         flex: 1,
-        height: "100%"
+        minHeight: "100%",
+        paddingBottom: 120,
     },
     profileContainer: {
         flexDirection: "row",
@@ -283,7 +284,7 @@ export const supportStyles = StyleSheet.create({
         borderRadius: 14,
         padding: 14,
         marginBottom: 15,
-        minWidth: "90%"
+        minWidth: "90%",
     },
     icon: {
         marginRight: 10,

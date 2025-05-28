@@ -30,7 +30,6 @@ export default function StaffListScreen(props: { route?: any }) {
 
     return (
         <ScrollView style={styles.container}>
-            {/* Thanh tìm kiếm */}
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
@@ -38,7 +37,6 @@ export default function StaffListScreen(props: { route?: any }) {
                 />
             </View>
 
-            {/* Đánh giá */}
             <View style={styles.ratingContainer}>
                 <View style={styles.ratingBox}>
                     <Text style={styles.stars}>⭐⭐⭐⭐⭐</Text>
@@ -50,7 +48,6 @@ export default function StaffListScreen(props: { route?: any }) {
                 </View>
             </View>
 
-            {/* Dịch vụ */}
             <Text style={styles.sectionTitle}>🔥 Đặt theo dịch vụ</Text>
             {pinnedstaffs.length ? (
                 pinnedstaffs.map((staff, index) => (
@@ -58,7 +55,7 @@ export default function StaffListScreen(props: { route?: any }) {
                         key={staff.id?.toString() + `x${index}x`}
                         name={staff?.name}
                         image={null}
-                        distance={100}
+                        distance={staff.distance}
                         onClickStaffDetail={() =>
                             onClickStaffDetail(staff.id || 0)
                         }
@@ -68,7 +65,6 @@ export default function StaffListScreen(props: { route?: any }) {
                 <View></View>
             )}
 
-            {/* Kỹ thuật viên */}
             <Text style={styles.sectionTitle}>💅 Kỹ thuật viên ưa thích</Text>
             <View style={styles.staffListContainer}>
                 {staffs.map((staff) => {
@@ -77,7 +73,8 @@ export default function StaffListScreen(props: { route?: any }) {
                             key={staff.id}
                             name={staff?.name}
                             image={staff?.user?.urlImage || null}
-                            distance={100}
+                            distance={staff.distance}
+                            province={staff.province}
                             onClickStaffDetail={() =>
                                 onClickStaffDetail(staff.id || 0)
                             }

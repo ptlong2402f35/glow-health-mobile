@@ -49,8 +49,10 @@ export default function useHandleStaffInfo() {
             openLoadingDialog?.();
             let data = await AuthService.me();
             let images = Array(6).fill(null);
-            for (let i = 0; i < images.length; i++) {
-                images[i] = data.staff.images[i];
+            let totalImages = [...(data.staff.images || [])];
+            if(data.urlImage) totalImages.unshift(data.urlImage);
+            for (let i = 0; i < totalImages.length; i++) {
+                images[i] = totalImages[i];
             }
             setStaff(data.staff);
             setStaffImages(images);

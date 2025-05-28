@@ -7,6 +7,7 @@ import PusherConfig from "../hook/pusher/pusher";
 import * as Location from "expo-location";
 import * as Device from "expo-device";
 import { getExpoToken } from "../hook/expoToken/expoToken";
+import * as Notifications from "expo-notifications";
 
 export interface UserLoader {
     name?: string | null;
@@ -14,12 +15,20 @@ export interface UserLoader {
     urlImage?: string | null;
     role?: number | null;
     totalMoney?: number | null;
+    lat?: number | null;
+    long?: number | null;
+}
+
+export interface GeoLocation {
+    lat?: number | null;
+    long?: number | null;
 }
 
 export default function useAttachUserLoader(props: {}) {
     const [user, setUser] = useState<User | null>(null);
     const [userLoader, setUserLoader] = useState<UserLoader | null>();
     const [isLogin, setIsLogin] = useState(false);
+    const [location, setLocation] = useState<GeoLocation | null>();
 
     const updateUser = (data: User) => {
         setUser(data);
@@ -52,10 +61,8 @@ export default function useAttachUserLoader(props: {}) {
             // subcribe pusher
             new PusherConfig().subcribe(data.id);
             // get user location
-            if (Device.isDevice) {
-                updateMyLocation();
-                updateExpoToken(data);
-            }
+            updateMyLocation();
+            updateExpoToken(data);
         } catch (err) {
             setIsLogin(false);
         }
@@ -85,6 +92,14 @@ export default function useAttachUserLoader(props: {}) {
                 lat: loc.coords.latitude,
                 long: loc.coords.longitude,
             });
+            if(loc.coords.latitude || loc.coords.longitude) {
+                setLocation(
+                    {
+                        lat: loc.coords.latitude,
+                        long: loc.coords.longitude
+                    }
+                );
+            }
         } catch (err) {
             console.error(err);
         }
@@ -92,10 +107,7 @@ export default function useAttachUserLoader(props: {}) {
 
     const updateExpoToken = async (user: User) => {
         try {
-            if (!Device.isDevice) {
-                console.log("Chỉ thiết bị thật mới nhận được thông báo push");
-                // return;
-            }
+            
             let token = await getExpoToken();
             if(user?.expoToken === token) return;
 
@@ -106,6 +118,50 @@ export default function useAttachUserLoader(props: {}) {
         }
     };
 
+    const provideDeviceNotificationPermission = async() => {
+        try {
+            
+           const { status: existingStatus } =
+                   await Notifications.getPermissionsAsync();
+               let finalStatus = existingStatus;
+           
+               if (existingStatus !== "granted") {
+                   const { status } = await Notifications.requestPermissionsAsync();
+                   finalStatus = status;
+               }
+           
+               if (finalStatus !== "granted") {
+                   console.log("Không cấp quyền nhận thông báo!");
+                   return;
+               }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const provideDeviceLocationPermission = async() => {
+        try {
+            const { status } =
+                await Location.requestForegroundPermissionsAsync();
+            console.log("grant:", status);
+            if (status !== "granted") {
+                return;
+            }
+            const loc = await Location.getCurrentPositionAsync({});
+            console.log("location user === ", loc);
+            if(loc.coords.latitude || loc.coords.longitude) {
+                setLocation(
+                    {
+                        lat: loc.coords.latitude,
+                        long: loc.coords.longitude
+                    }
+                );
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     return {
         user,
         updateUser,
@@ -115,6 +171,9 @@ export default function useAttachUserLoader(props: {}) {
         isLogin,
         logout,
         updateMyLocation,
-        updateExpoToken
+        updateExpoToken,
+        provideDeviceNotificationPermission,
+        provideDeviceLocationPermission,
+        location
     };
 }

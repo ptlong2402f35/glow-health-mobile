@@ -132,72 +132,74 @@ export default function OrderCreateDetailScreen(props: { route?: any }) {
     return (
         <View style={orderCreateScreenStyle.container}>
             <BackButton/>
-            <View style={orderCreateScreenStyle.headerContainer}>
-                <Text style={orderCreateScreenStyle.title}>
-                    Thông tin đặt lịch
-                </Text>
-            </View>
-
-            <View style={orderCreateScreenStyle.addressContainer}>
-                <Text style={orderCreateScreenStyle.label}>
-                    Địa chỉ của bạn
-                </Text>
-                <Text
-                    style={orderCreateScreenStyle.address}
-                    onPress={onSelectAddress}
-                >
-                    {address || "Vui lòng nhập địa chỉ của bạn"}
-                </Text>
-            </View>
-
-            <View style={orderCreateScreenStyle.serviceContainer}>
-                <Image
-                    source={
-                        data.staff?.user?.urlImage
-                            ? { uri: data.staff?.user?.urlImage }
-                            : DefaultAvatar
-                    }
-                    style={orderCreateScreenStyle.serviceImage}
-                />
-                <View style={orderCreateScreenStyle.serviceInfo}>
-                    <Text style={orderCreateScreenStyle.serviceTitle}>
-                        {data.staff?.name || ""}
-                    </Text>
-                    <Text style={orderCreateScreenStyle.rating}>
-                        {data.staff?.rateAvg}
+            <View>
+                <View style={orderCreateScreenStyle.headerContainer}>
+                    <Text style={orderCreateScreenStyle.title}>
+                        Thông tin đặt lịch
                     </Text>
                 </View>
-            </View>
 
-            <View style={orderCreateScreenStyle.feeContainer}>
-                <Entypo name="text-document" size={24} color="black" />
-                <View>
-                    {(data.prices || []).map((item: any, index: any) => (
-                        <View
-                            key={index}
-                            style={orderCreateScreenStyle.serviceWrap}
-                        >
-                            <Text style={orderCreateScreenStyle.feeText}>
-                                {item.name}:
-                            </Text>
-                            <Text style={orderCreateScreenStyle.feeText}>
-                                {item.price}đ
-                            </Text>
-                        </View>
-                    ))}
-                </View>
-                <View style={orderCreateScreenStyle.feeContainer}>
-                    <Text style={orderCreateScreenStyle.feeText}>
-                        {updateTime
-                            ? "Ngay bây giờ"
-                            : moment(timerTime).format("MM/DD/YYYY h:mm:ss") ||
-                              ""}
+                <View style={orderCreateScreenStyle.addressContainer}>
+                    <Text style={orderCreateScreenStyle.label}>
+                        Địa chỉ của bạn
                     </Text>
-                    <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                        <Text style={orderCreateScreenStyle.feeText}>
-                            Hẹn lịch
+                    <Text
+                        style={orderCreateScreenStyle.address}
+                        onPress={onSelectAddress}
+                    >
+                        {address || "Vui lòng nhập địa chỉ của bạn"}
+                    </Text>
+                </View>
+
+                <View style={orderCreateScreenStyle.serviceContainer}>
+                    <Image
+                        source={
+                            data.staff?.user?.urlImage
+                                ? { uri: data.staff?.user?.urlImage }
+                                : DefaultAvatar
+                        }
+                        style={orderCreateScreenStyle.serviceImage}
+                    />
+                    <View style={orderCreateScreenStyle.serviceInfo}>
+                        <Text style={orderCreateScreenStyle.serviceTitle}>
+                            {data.staff?.name || ""}
                         </Text>
-                    </TouchableOpacity>
+                        <Text style={orderCreateScreenStyle.rating}>
+                            {data.staff?.rateAvg}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={orderCreateScreenStyle.feeContainer}>
+                    <Entypo name="text-document" size={24} color="black" />
+                    <View>
+                        {(data.prices || []).map((item: any, index: any) => (
+                            <View
+                                key={index}
+                                style={orderCreateScreenStyle.serviceWrap}
+                            >
+                                <Text style={orderCreateScreenStyle.feeText}>
+                                    {item.name}:
+                                </Text>
+                                <Text style={orderCreateScreenStyle.feeText}>
+                                    {item.price}đ
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+                    <View style={orderCreateScreenStyle.feeContainer}>
+                        <Text style={orderCreateScreenStyle.feeText}>
+                            {updateTime
+                                ? "Ngay bây giờ"
+                                : moment(timerTime).format("MM/DD/YYYY h:mm:ss") ||
+                                ""}
+                        </Text>
+                        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                            <Text style={orderCreateScreenStyle.feeText}>
+                                Hẹn lịch
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
 

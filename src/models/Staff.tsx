@@ -38,6 +38,9 @@ export default class Staff implements IModel<Staff> {
 	user?: User | null;
 	store?: Store | null;
 	staffServices?: StaffService[];
+    province?: any | null;
+    distance?: number | null;
+    serviceGroupTree?: any | null;
 
 	constructor(input?: Partial<Staff>) {
 		this.id = input?.id || null;
@@ -69,6 +72,9 @@ export default class Staff implements IModel<Staff> {
         this.user = input?.user || null;
         this.store = input?.store || null;
         this.staffServices = input?.staffServices || [];
+        this.province = input?.province || null;
+        this.distance = input?.distance || null;
+        this.serviceGroupTree = input?.serviceGroupTree || null;
 	}
 
 	parse(json?: any): Staff {
@@ -105,6 +111,8 @@ export default class Staff implements IModel<Staff> {
             user: json.user ? new User().parse(json.user) : null,
             staffServices: json.staffServices ? json.staffServices.map((item:any) => new StaffService().parse(item)) : null,
             store: json.store ? new Store().parse(json.store) : null,
+            distance: json?.distance,
+            serviceGroupTree: json?.serviceGroupTree,
 		});
 
 		return this;

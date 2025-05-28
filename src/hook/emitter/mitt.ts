@@ -7,6 +7,9 @@ import { Socket } from "socket.io-client";
 export enum EmitterEvent {
     ReloadStaffOrderList = "reloadStaffOrderList",
     ShowToast = "ShowToast",
+    Redirect = "Redirect",
+    ReloadForwardOrder = "ReloadForwardOrder",
+    ReloadMyOrderDetail = "ReloadMyOrderDetail",
 }
 
 export const emitter = mitt();

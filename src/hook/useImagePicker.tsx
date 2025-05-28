@@ -47,9 +47,11 @@ export default function useImagePicker() {
             quality: 1,
         });
 
-        if (!result.canceled) {
-            return result.assets[0];
+        if (result.canceled) {
+            return null;
         }
+
+        return result.assets[0];
     };
 
     const uploadBulkImage = async (images: any[]) => {

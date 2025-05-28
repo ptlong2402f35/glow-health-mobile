@@ -72,6 +72,7 @@ export const detailStaffStyles = StyleSheet.create({
     wrapContainer: {
         backgroundColor: "#d9d6d5",
         paddingBottom: 72,
+        flex: 1
     },
     container: {
         backgroundColor: "#d9d6d5",
@@ -95,8 +96,21 @@ export const detailStaffStyles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 6,
     },
+    staffSubInfoContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+        marginBottom: 12
+    },
+    staffSubInfoText: {
+        display: "flex",
+        flexDirection: "row",
+        gap: 2,
+        alignItems: "center"
+    },
     staffDes: {
-        color: "gray",
+        marginTop: 12
     },
     sectionTitle: {
         fontWeight: "bold",
@@ -203,14 +217,21 @@ export const staffInfoUpdateStyle = StyleSheet.create({
     placeholder: {
         width: screenWidth * 0.3,
         height: screenWidth * 0.3,
+        marginBottom: 10,
+        // backgroundColor: "#ccc",
+        // display: "flex",
+        // justifyContent: "center",
+        // alignItems: "center",
+    },
+    placeholderInit: {
         borderRadius: 10,
         overflow: "hidden",
-        marginBottom: 10,
         backgroundColor: "#ccc",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
     },
+    deleteIcon: { position: "absolute", top: 0, right: 0, zIndex: 10 },
     note: { fontSize: 12, color: "#555" },
     input: {
         borderWidth: 1,
@@ -231,7 +252,7 @@ export const staffInfoUpdateStyle = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#ccc",
         borderRadius: 6,
-        paddingLeft: 4, 
+        paddingLeft: 4,
         paddingRight: 4,
     },
     row: { flexDirection: "row", alignItems: "center", marginVertical: 6 },
@@ -257,7 +278,15 @@ export const staffServiceStyles = StyleSheet.create({
     container: {
         padding: 16,
         backgroundColor: "#fff",
+        paddingBottom: 128,
+        flex: 1
     },
+    titleContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    headerText: { fontSize: 24, fontWeight: "bold", marginVertical: 10 },
     note: {
         color: "red",
         marginBottom: 10,
@@ -268,7 +297,7 @@ export const staffServiceStyles = StyleSheet.create({
         marginBottom: 10,
     },
     serviceBox: {
-        backgroundColor: "#f4f4f4",
+        backgroundColor: "#ccc",
         padding: 12,
         borderRadius: 8,
         marginBottom: 12,
@@ -284,7 +313,9 @@ export const staffServiceStyles = StyleSheet.create({
     },
     input: {
         marginTop: 8,
+        paddingLeft: 12,
         backgroundColor: "white",
+        borderRadius: 6
     },
     addServiceRow: {
         flexDirection: "row",
@@ -294,6 +325,13 @@ export const staffServiceStyles = StyleSheet.create({
     },
     saveButton: {
         marginTop: 20,
+        backgroundColor: "green",
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 24,
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center"
     },
     ssPriceUpdateWrap: {
         display: "flex",

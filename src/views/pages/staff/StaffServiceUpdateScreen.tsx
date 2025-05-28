@@ -5,6 +5,7 @@ import {
     TextInput,
     Text,
     TouchableOpacity,
+    KeyboardAvoidingView,
 } from "react-native";
 import { staffServiceStyles } from "./styles/styles";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -14,6 +15,8 @@ import Collapsible from "react-native-collapsible";
 import StaffServicePriceItem, {
     StaffServiceCreateDialog,
 } from "./components/StaffServicePriceItem";
+import BackButton from "../../../common/components/BackButton";
+import ServiceGroup from "../../../models/ServiceGroup";
 
 export default function StaffServiceUpdateScreen() {
     const {
@@ -24,81 +27,112 @@ export default function StaffServiceUpdateScreen() {
         getServiceSelect,
         createStaffService,
         updateStaffServiceBatch,
-        removeStaffService
+        removeStaffService,
     } = useHandleStaffService({});
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
+    const [selectSService, setSelectSService] = useState<any>({});
 
-    const onConfirmCreateSService = (props: {
+    const onConfirmCreateSService = async (props: {
         name: string;
         description: string;
-        serviceId: number;
+        serviceId?: number;
+        serviceGroupId?: number;
     }) => {
-        createStaffService({
+        await createStaffService({
             ...props,
         });
+        setIsOpenCreateDialog(false);
     };
 
     const onConfirmUpdate = () => {
-        let built = [];
-        for(let item of staffService) {
-            let newPrices: any = {
-                id: item.id,
-                prices: []
-            };
-            for(let price of prices) {
-                if(price.staffServiceId === item.id) {
-                    newPrices.prices = [
-                        ...newPrices.prices,
-                        {
-                            staffServiceId: item.id,
-                            price: price.price,
-                            unit: price.unit,
-                            serviceGroupId: item.serviceGroupId
-                        }
-                    ];
-                }
-            }
-            built.push(newPrices);
-        }
+        let built = prices
+            .map((item) => ({
+                staffServiceId: item.staffServiceId,
+                price: item.price,
+                unit: item.unit,
+                serviecGroupId: item.serviceGroupId,
+            }))
+            .filter((val) => val.price && val.unit);
 
-        console.log("built");
-        updateStaffServiceBatch({data: built});
+        console.log("built", built);
+        updateStaffServiceBatch({ data: built });
+    };
 
-    }
+    const openCreateDialog = (staffService?: any) => {
+        setIsOpenCreateDialog(true);
+        setSelectSService(staffService);
+    };
 
     useEffect(() => {
         getStaffService();
     }, []);
 
     return (
-        <ScrollView style={staffServiceStyles.container}>
-            <Text style={staffServiceStyles.note}>
-                Lưu ý: Chỉ thêm các dịch vụ bạn cung cấp
-            </Text>
-            <Text style={staffServiceStyles.sectionTitle}>Spa & Massage</Text>
+        <KeyboardAvoidingView behavior={"height"} style={{ flex: 1 }}>
+            <ScrollView
+                style={staffServiceStyles.container}
+                contentContainerStyle={{ flexGrow: 1 }}
+            >
+                <BackButton top={6} left={6} />
+                <View style={staffServiceStyles.titleContainer}>
+                    <Text style={staffServiceStyles.headerText}>
+                        Thông tin dịch vụ
+                    </Text>
+                </View>
+                <Text style={staffServiceStyles.note}>
+                    Lưu ý: Chỉ thêm các dịch vụ bạn cung cấp
+                </Text>
 
-            {staffService.map((service, index) => (
+                {staffService.map((service, index) => (
+                    <StaffServiceGroupItem
+                        key={service.id}
+                        serviceGroup={service}
+                        updatePrices={updatePrices}
+                        setIsOpenCreateDialog={openCreateDialog}
+                        removeStaffService={removeStaffService}
+                        prices={prices}
+                    />
+                ))}
+
+                <TouchableOpacity
+                    onPress={() => onConfirmUpdate()}
+                    style={staffServiceStyles.saveButton}
+                >
+                    <Text style={{color:"#fff", fontSize:18, fontWeight:"bold"}}>Lưu</Text>
+                </TouchableOpacity>
+                <StaffServiceCreateDialog
+                    open={isOpenCreateDialog}
+                    onClose={() => setIsOpenCreateDialog(false)}
+                    onConfirm={onConfirmCreateSService}
+                    selectSService={selectSService}
+                />
+            </ScrollView>
+        </KeyboardAvoidingView>
+    );
+}
+
+export function StaffServiceGroupItem(props: {
+    serviceGroup: ServiceGroup;
+    updatePrices: any;
+    setIsOpenCreateDialog: any;
+    removeStaffService: any;
+    prices?: any[];
+}) {
+    return (
+        <View>
+            <Text style={staffServiceStyles.sectionTitle}>
+                {props.serviceGroup.name}
+            </Text>
+            {props?.serviceGroup?.services?.map((service, index) => (
                 <StaffServicePriceItem
-                    key={service.id}
+                    key={service.id + `${index}`}
                     staffService={service}
-                    onUpdatePrice={updatePrices}
-                    setIsOpenCreateDialog={setIsOpenCreateDialog}
-                    removeStaffService={removeStaffService}
+                    onUpdatePrice={props.updatePrices}
+                    setIsOpenCreateDialog={props.setIsOpenCreateDialog}
+                    removeStaffService={props.removeStaffService}
+                    prices={props.prices}
                 />
             ))}
-
-            <TouchableOpacity
-                onPress={() => onConfirmUpdate()}
-                style={staffServiceStyles.saveButton}
-            >
-                <Text>Lưu</Text>
-            </TouchableOpacity>
-            <StaffServiceCreateDialog
-                open={isOpenCreateDialog}
-                onClose={() => setIsOpenCreateDialog(false)}
-                getServiceSelect={getServiceSelect}
-                onConfirm={onConfirmCreateSService}
-            />
-        </ScrollView>
+        </View>
     );
 }

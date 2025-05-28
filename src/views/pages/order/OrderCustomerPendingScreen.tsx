@@ -17,10 +17,20 @@ import Order from "../../../models/Order";
 import OrderForwarder from "../../../models/OrderForwarder";
 import BackButton from "../../../common/components/BackButton";
 const defaultAvatar = require("../../../../assets/defaultAvatar.png");
-
+import {
+    AntDesign,
+    Entypo,
+    FontAwesome,
+    Foundation,
+    Ionicons,
+    MaterialIcons,
+} from "@expo/vector-icons";
+import useUserLoader from "../../../hook/useUserLoader";
+import { emitter, EmitterEvent } from "../../../hook/emitter/mitt";
 export default function OrderCustomerPendingScreen(props: { route: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     let id = props.route.params?.id || 0;
+    let { location } = useUserLoader();
 
     const { order, forwardOrder, getForwardOrder, cancelOrderByCustomer } =
         useCustomerOrderDetail();
@@ -42,38 +52,66 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
 
     useEffect(() => {
         if (!id) return;
-        getForwardOrder(id);
+        getForwardOrder(id, location?.lat, location?.long);
+        emitter.on(EmitterEvent.ReloadForwardOrder, () => getForwardOrder(id, location?.lat, location?.long));
+        return () => {
+            emitter.off(EmitterEvent.ReloadForwardOrder, () => getForwardOrder(id, location?.lat, location?.long));
+        };
     }, [id]);
 
     return (
         <View style={orderCustomerDetailStyle.container}>
-            <BackButton/>
+            <BackButton />
             <TouchableOpacity
                 style={orderCustomerDetailStyle.cancelBtn}
                 onPress={onCancelOrder}
             >
                 <Text style={orderCustomerDetailStyle.cancelBtnText}>Hủy</Text>
             </TouchableOpacity>
-            {/* <View style={orderCustomerDetailStyle.map}></View> */}
             <MapView
                 style={orderCustomerDetailStyle.map}
                 initialRegion={{
-                    latitude: 10.762622,
-                    longitude: 106.660172,
+                    latitude: 37.4217937,
+                    longitude: -122.083922,
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
                 }}
             >
-                <Marker
-                    coordinate={{ latitude: 10.762622, longitude: 106.660172 }}
-                    title="Địa điểm"
-                    description="Trường ĐH Bách Khoa TP.HCM"
-                />
+                {forwardOrder
+                    ?.filter((item) => item.staff?.lat || item?.staff?.long)
+                    ?.map((item, index) => (
+                        <Marker
+                            key={index + "marker"}
+                            coordinate={{
+                                latitude: item.staff?.lat || 0,
+                                longitude: item.staff?.long || 0,
+                            }}
+                            title={item?.staff?.name || ""}
+                            // description="Trường ĐH Bách Khoa TP.HCM"
+                        >
+                            <Image
+                                source={
+                                    item.staff?.user?.urlImage
+                                        ? { uri: item.staff?.user?.urlImage }
+                                        : defaultAvatar
+                                }
+                                style={{
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: 25,
+                                    borderWidth: 2,
+                                    borderColor: "#fff",
+                                }}
+                            />
+                        </Marker>
+                    ))}
             </MapView>
 
             <View style={orderCustomerDetailStyle.bottomSheet}>
                 <Text style={orderCustomerDetailStyle.alert}>
-                    Hãy chọn kỹ thuật viên sẵn sàng
+                    {forwardOrder?.length
+                        ? "Hãy chọn kỹ thuật viên sẵn sàng"
+                        : "Đang tìm kiếm KTV gần bạn"}
                 </Text>
 
                 <FlatList
@@ -115,13 +153,49 @@ export function ForwardOrderItem(props: {
             }
         >
             <Image
-                source={defaultAvatar}
+                source={
+                    props.item?.staff?.user?.urlImage ||
+                    props.item?.staff?.images?.[0]
+                        ? {
+                              uri:
+                                  props.item?.staff?.user?.urlImage ||
+                                  props.item?.staff?.images?.[0],
+                          }
+                        : defaultAvatar
+                }
                 style={orderCustomerDetailStyle.illustration}
                 resizeMode="contain"
             />
-            <View>
+            <View style={orderCustomerDetailStyle.itemContainer}>
                 <Text>{props.item?.staff?.name || ""}</Text>
-                <Text>{props.item?.staff?.rateAvg || ""}</Text>
+                <View style={orderCustomerDetailStyle.itemContainerFlex}>
+                    <View style={orderCustomerDetailStyle.itemContainerFlex}>
+                        <Text>
+                            <AntDesign name="staro" size={16} color="black" />
+                            {props.item?.staff?.rateAvg || "5"}
+                        </Text>
+                    </View>
+                    <View style={orderCustomerDetailStyle.itemContainerFlex}>
+                        {props.item?.staff?.distance ||
+                        props.item?.staff?.province?.name ? (
+                            <View>
+                                <Entypo
+                                    name="location-pin"
+                                    size={16}
+                                    color="black"
+                                />
+                                <Text>
+                                    {(props.item?.staff?.distance
+                                        ? `${props.item?.staff?.distance}m`
+                                        : `${props.item?.staff?.province?.name}`) ||
+                                        ""}
+                                </Text>
+                            </View>
+                        ) : (
+                            <View></View>
+                        )}
+                    </View>
+                </View>
             </View>
         </TouchableOpacity>
     );

@@ -8,6 +8,7 @@ export default function useUserLoader() {
     user: ctx?.user,
     isLogin: ctx?.isLogin,
     reloadMe: ctx?.reloadMe,
-    logout: ctx?.logout
+    logout: ctx?.logout,
+    location: ctx?.location
   };
 }

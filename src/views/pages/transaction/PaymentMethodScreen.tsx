@@ -17,6 +17,7 @@ import {
 } from "@expo/vector-icons";
 import useUserLoader from "../../../hook/useUserLoader";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import BackButton from "../../../common/components/BackButton";
 
 export const paymentMethods = [
     {
@@ -60,6 +61,7 @@ export default function PaymentMethodScreen(props: { route?: any }) {
 
     return (
         <View style={paymentMethodStyle.container}>
+            <BackButton/>
             <View style={paymentMethodStyle.headerContainer}>
                 <Text style={paymentMethodStyle.title}>
                     Phương thức thanh toán

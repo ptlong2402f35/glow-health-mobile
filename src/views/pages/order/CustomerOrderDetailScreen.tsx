@@ -21,6 +21,7 @@ import {
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import moment from "moment";
 import BackButton from "../../../common/components/BackButton";
+import { emitter, EmitterEvent } from "../../../hook/emitter/mitt";
 
 export default function CustomerOrderDetailScreen(props: { route: any }) {
     let id = props.route.params.id || 0;
@@ -62,7 +63,10 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
         navigation.navigate("Review", {
             urlImage: customerOrder?.staff?.user?.urlImage,
             staffName: customerOrder?.staff?.name || "",
-            serviceNames: customerOrder?.prices?.map(item => item.staffService?.name) || [],
+            serviceNames:
+                customerOrder?.prices?.map((item) => item.staffService?.name) ||
+                [],
+            orderId: id,
         } as never);
     };
 
@@ -73,11 +77,18 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
     };
 
     useEffect(() => {
-        if(customerOrder?.status === OrderStatus.Pending) navigation.navigate("MyOrderPendingDetail", {id: customerOrder.id} as never);
-    }, [customerOrder?.status])
+        if (customerOrder?.status === OrderStatus.Pending)
+            navigation.navigate("MyOrderPendingDetail", {
+                id: customerOrder.id,
+            } as never);
+    }, [customerOrder?.status]);
 
     useEffect(() => {
         getCustomerOrderDetail({ id });
+        emitter.on(EmitterEvent.ReloadMyOrderDetail, () => getCustomerOrderDetail({id}));
+        return () => {
+            emitter.off(EmitterEvent.ReloadMyOrderDetail, () => getCustomerOrderDetail({id}));
+        };
     }, [id]);
 
     return (
@@ -86,7 +97,11 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
             <Text style={customerOrderDetailStyle.header}>Chi tiết đơn</Text>
 
             <Image
-                source={DefaultAvatar} // Thay bằng ảnh phù hợp của bạn
+                source={
+                    customerOrder?.staff?.user?.urlImage
+                        ? { uri: customerOrder?.staff?.user?.urlImage }
+                        : DefaultAvatar
+                }
                 style={customerOrderDetailStyle.image}
                 resizeMode="contain"
             />
@@ -110,14 +125,14 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
                 </Text>
             </View>
 
-            <View style={customerOrderDetailStyle.infoBox}>
+            <View style={[customerOrderDetailStyle.infoBox, { width: "100%" }]}>
                 <View style={customerOrderDetailStyle.userRow}>
                     <Image
                         source={
                             customerOrder?.staff?.user?.urlImage
                                 ? { uri: customerOrder?.staff?.user?.urlImage }
                                 : DefaultAvatar
-                        } // Thay bằng avatar thực tế
+                        }
                         style={customerOrderDetailStyle.avatar}
                     />
                     <View style={{ marginLeft: 10 }}>
@@ -130,7 +145,7 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
                                     {customerOrder.staff?.rateAvg}
                                     <AntDesign
                                         name="star"
-                                        size={24}
+                                        size={20}
                                         color="yellow"
                                     />
                                 </Text>
@@ -141,22 +156,52 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
                     </View>
                 </View>
 
-                <Text style={customerOrderDetailStyle.detail}>
+                <View
+                    style={[
+                        customerOrderDetailStyle.detail,
+                        {
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 6,
+                            width: "100%",
+                        },
+                    ]}
+                >
                     <Ionicons
                         name="document-text-outline"
-                        size={24}
+                        size={20}
                         color="black"
                     />
-                    {customerOrder?.prices?.map((item) => (
-                        <View key={item.id}>
-                            <Text>{item?.staffService?.name || ""}</Text>
-                            <Text>{item?.unit || ""}</Text>
-                        </View>
-                    ))}
+                    <View style={{}}>
+                        {customerOrder?.prices?.map((item) => (
+                            <View
+                                key={item.id}
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    width: "90%",
+                                }}
+                            >
+                                <Text>{item?.staffService?.name || ""}</Text>
+                                <Text>{item?.unit || ""}</Text>
+                            </View>
+                        ))}
+                    </View>
+                </View>
+                <View
+                    style={[
+                        {
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        },
+                    ]}
+                >
                     <Text style={customerOrderDetailStyle.detail}>
                         <AntDesign
                             name="clockcircleo"
-                            size={24}
+                            size={20}
                             color="black"
                         />
                         Giờ làm việc:
@@ -164,21 +209,52 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
                             "MM/DD/YYYY h:mm:ss"
                         ) || ""}
                     </Text>
-                </Text>
-                <Text style={customerOrderDetailStyle.detail}>
-                    <FontAwesome name="money" size={24} color="black" />
-                    {customerOrder?.paymentMethodId === 1
-                        ? "Thanh toán bằng tiền mặt"
-                        : "Thanh toán bằng ví Glow"}
-                </Text>
-                <Text style={customerOrderDetailStyle.detail}>
-                    <AntDesign name="shoppingcart" size={24} color="black" />
-                    Mã đơn hàng: {customerOrder?.code || ""}
-                </Text>
+                </View>
+                <View
+                    style={[
+                        {
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        },
+                    ]}
+                >
+                    <Text style={customerOrderDetailStyle.detail}>
+                        <FontAwesome name="money" size={20} color="black" />
+                        {customerOrder?.paymentMethodId === 1
+                            ? "Thanh toán bằng tiền mặt"
+                            : "Thanh toán bằng ví Glow"}
+                    </Text>
+                </View>
+                <View
+                    style={[
+                        {
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        },
+                    ]}
+                >
+                    <Text style={customerOrderDetailStyle.detail}>
+                        <AntDesign
+                            name="shoppingcart"
+                            size={20}
+                            color="black"
+                        />
+                        Mã đơn hàng: {customerOrder?.code || ""}
+                    </Text>
+                </View>
             </View>
 
             {customerOrder?.status === OrderStatus.Finished && (
-                <View>
+                <View
+                    style={{
+                        position: "absolute",
+                        bottom: 34,
+                        left: 24,
+                        right: 24,
+                    }}
+                >
                     <TouchableOpacity
                         style={customerOrderDetailStyle.primaryButton}
                         onPress={onReviewPress}

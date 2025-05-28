@@ -72,7 +72,7 @@ export default function OrderDetailScreen(props: { route: any }) {
     };
 
     const onConfirmFinish = () => {
-        finishOrder({ id });
+        finishOrder({ id: order?.id || 0 });
     };
 
     useEffect(() => {
@@ -95,7 +95,7 @@ export default function OrderDetailScreen(props: { route: any }) {
                 </View>
 
                 <View style={orderDetailStyles.userInfo}>
-                    <View style={orderDetailStyles.avatar} />
+                    <View style={orderDetailStyles.avatar}></View>
                     <View>
                         <Text style={orderDetailStyles.userName}>
                             {`Khách nam, Việt Nam`}
@@ -182,7 +182,12 @@ export default function OrderDetailScreen(props: { route: any }) {
                     </Text>
                 </View>
             </ScrollView>
-            {(order?.status === OrderStatus.Pending  && (order?.isForwardOrder ? (order?.forwardAccept ? false : true ) : true)) ? (
+            {order?.status === OrderStatus.Pending &&
+            (order?.isForwardOrder
+                ? order?.forwardAccept
+                    ? false
+                    : true
+                : true) ? (
                 <View style={orderDetailStyles.btnWrapper}>
                     <TouchableOpacity
                         style={orderDetailStyles.readyCancelBtn}
@@ -204,7 +209,8 @@ export default function OrderDetailScreen(props: { route: any }) {
             ) : (
                 <View></View>
             )}
-            {(order?.status === OrderStatus.Approved && !order?.isForwardOrder) ? (
+            {order?.status === OrderStatus.Approved &&
+            !order?.isForwardOrder ? (
                 <View style={orderDetailStyles.btnWrapper}>
                     <TouchableOpacity
                         style={orderDetailStyles.readyCancelBtn}
@@ -218,7 +224,7 @@ export default function OrderDetailScreen(props: { route: any }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={orderDetailStyles.readyBtn}
-                        onPress={() => finishOrder({ id: order.id || 0 })}
+                        onPress={() => onConfirmFinish()}
                     >
                         <Text style={{ color: "#fff", fontWeight: "bold" }}>
                             Hoàn thành

@@ -20,6 +20,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useAttachUserLoader from "../../../common/useAttachUserLoader";
 import { UserRole } from "../../../models/User";
 import BottomTab from "../../../common/components/BottomTab";
+import BackButton from "../../../common/components/BackButton";
 const DefaultAvatar = require("../../../../assets/defaultAvatar.png");
 
 export default function AccountScreen() {
@@ -37,7 +38,7 @@ export default function AccountScreen() {
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ minHeight: "100%", paddingBottom: 82}}>
             {!isLogin ? (
                 <View style={userAccountStyles.loginBtnWrap}>
                     <TouchableOpacity style={userAccountStyles.loginWrap}>
@@ -96,6 +97,26 @@ export default function AccountScreen() {
                                 : "Đăng kí đối tác Glow Health"}
                         </Text>
                     </TouchableOpacity>
+
+                    {
+                        userLoader?.role === UserRole.Staff ? (
+                            <TouchableOpacity
+                                style={userAccountStyles.card}
+                                onPress={() => {
+                                    navigation.navigate("StaffServiceUpdate");
+                                }}
+                            >
+                                <FontAwesome
+                                    name="handshake-o"
+                                    size={24}
+                                    color="black"
+                                />
+                                <Text style={userAccountStyles.cardText}>
+                                    Dịch vụ của tôi
+                                </Text>
+                            </TouchableOpacity>
+                        ) : <></>
+                    }
 
                     <View
                         style={{ flexDirection: "row", alignItems: "center" }}

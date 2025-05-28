@@ -10,10 +10,6 @@ Notifications.setNotificationHandler({
 });
 
 export async function getExpoToken() {
-    if (!Device.isDevice) {
-        console.log("Chỉ thiết bị thật mới nhận được thông báo push");
-        return;
-    }
     const { status: existingStatus } =
         await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;

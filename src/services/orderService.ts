@@ -59,8 +59,21 @@ export default class OrderServiceApi {
         return new Order().parse(data);
     }
 
-    public static async getForwardOrders(props: { id: number }) {
-        const { data } = await http.get(`/my-order-forwarder/${props.id}`);
+    public static async getForwardOrders(props: {
+        id: number;
+        lat?: number | null;
+        long?: number | null;
+    }) {
+        let params: any = {
+            ...(props.lat ? { lat: props.lat } : {}),
+            ...(props.long ? { long: props.long } : {}),
+            useCoordinate: props.lat || props.long ? true : false,
+        };
+        const { data } = await http.get(
+            `/my-order-forwarder/${props.id}?${new URLSearchParams(
+                params
+            ).toString()}`
+        );
         console.log("data order forwarder === ", data);
         return new OrderForwarder().parseList(data);
     }
@@ -101,10 +114,13 @@ export default class OrderServiceApi {
         return data;
     }
 
-    public static async switchOrder(props: { baseOrderId: number, forwardOrderId: number }) {
+    public static async switchOrder(props: {
+        baseOrderId: number;
+        forwardOrderId: number;
+    }) {
         const { data } = await http.post(`/order-switch-to-forwarder`, {
             baseOrderId: props.baseOrderId,
-            forwardOrderId: props.forwardOrderId
+            forwardOrderId: props.forwardOrderId,
         });
         console.log("data order switched === ", data);
         return data;
@@ -131,6 +147,21 @@ export default class OrderServiceApi {
             fromForwardOrderId: props.fromForwardOrderId,
         };
         const { data } = await http.post("/order", body);
+
+        return data;
+    }
+
+    public static async reviewMyOrder(props: {
+        orderId?: number;
+        rate?: number;
+        note?: string;
+    }) {
+        let body = {
+            orderId: props.orderId,
+            rate: props.rate,
+            note: props.note || "",
+        };
+        const { data } = await http.put("/review-my-order", body);
 
         return data;
     }
