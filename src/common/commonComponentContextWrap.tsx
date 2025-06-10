@@ -38,7 +38,7 @@ export type CommonComponentsWrapContextType = {
     userLoader?: UserLoader | null;
     location?: GeoLocation | null;
     isLogin?: boolean;
-    reloadMe?: () => Promise<void>;
+    reloadMe?: (init?: boolean) => Promise<void>;
     user?: User | null;
     logout?: () => Promise<void>;
     showToast?: (data: any) => void;

@@ -30,7 +30,8 @@ export default function useCustomerOrderDetail() {
         try {
             openLoadingDialog?.();
             let data = await OrderServiceApi.cancelMyOrder({id: orderId});
-            afterCall?.();
+            openAlertDialog?.("Thông báo", "Hủy đơn thành công", () => afterCall?.())
+            // afterCall?.();
         }
         catch (err: any) {
             let message = err?.response?.data?.message;

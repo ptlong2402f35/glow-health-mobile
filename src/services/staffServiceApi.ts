@@ -41,7 +41,11 @@ export default class StaffServiceApi {
             `/staff?${new URLSearchParams(params).toString()}`
         );
 
-        return data.docs.length ? new Staff().parseList(data.docs) : [];
+        return {
+            data: data.docs.length ? new Staff().parseList(data.docs) : [],
+            pages: data.pages,
+            currentPage: data.currentPage,
+        };
     }
 
     public static async getPinnedStaffList(props: { id?: string }) {
@@ -64,6 +68,7 @@ export default class StaffServiceApi {
         districtId?: number;
         images?: string[];
         gender?: number;
+        urlImage?: string;
     }) {
         let body = {
             ...(props.name ? { name: props.name } : {}),
@@ -72,7 +77,9 @@ export default class StaffServiceApi {
             ...(props.districtId ? { districtId: props.districtId } : {}),
             ...(props.images ? { images: props.images } : {}),
             ...(props.gender ? { gender: props.gender } : {}),
+            ...(props.urlImage ? { urlImage: props.urlImage } : {}),
         };
+        console.log("body -=== ", body);
         const { data } = await http.put(`/staff`, body);
         console.log("data /update staff === ", data);
         return data;
@@ -131,6 +138,7 @@ export default class StaffServiceApi {
         communeId?: number;
         type?: number;
         description?: string;
+        urlImage?: string;
     }) {
         let body = {
             ...(props.name ? { name: props.name } : {}),
@@ -143,6 +151,7 @@ export default class StaffServiceApi {
             ...(props.communeId ? { communeId: props.communeId } : {}),
             ...(props.type ? { type: props.type } : {}),
             ...(props.description ? { description: props.description } : {}),
+            ...(props.urlImage ? { urlImage: props.urlImage } : {}),
         };
         const { data } = await http.put(`/staff-register`, body);
         console.log("data /update staff register === ", data);
@@ -151,13 +160,17 @@ export default class StaffServiceApi {
 
     public static async getStaffServiceBatch(props: {}) {
         const { data } = await http.get(`/staff-service-batch`);
-        let x: any = [];
-        for (let item of data) {
-            for (let i2 of item.services) {
-                x.push(...i2.price);
-            }
-        }
-        console.log("data /update staff service batch === ", x);
+        console.log("data /update staff service batch === ", data);
+
+        // let x: any = [];
+        // for (let item of data) {
+        //     console.log("item ===", item);
+        //     for (let i2 of item.services) {
+        //         console.log("item22 ===", i2);
+        //         x.push(...i2.prices);
+        //     }
+        // }
+        // console.log("data /update staff service batch === ", x);
         return data.length ? new ServiceGroup().parseList(data) : [];
     }
 }

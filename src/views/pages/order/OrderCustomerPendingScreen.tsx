@@ -37,7 +37,7 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
 
     const onCancelOrder = () => {
         cancelOrderByCustomer(id, () => {
-            navigation.navigate("MyOrderList");
+            navigation.navigate("MyOrderList", { reload: true } as never);
         });
     };
 
@@ -53,9 +53,13 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
     useEffect(() => {
         if (!id) return;
         getForwardOrder(id, location?.lat, location?.long);
-        emitter.on(EmitterEvent.ReloadForwardOrder, () => getForwardOrder(id, location?.lat, location?.long));
+        emitter.on(EmitterEvent.ReloadForwardOrder, () =>
+            getForwardOrder(id, location?.lat, location?.long)
+        );
         return () => {
-            emitter.off(EmitterEvent.ReloadForwardOrder, () => getForwardOrder(id, location?.lat, location?.long));
+            emitter.off(EmitterEvent.ReloadForwardOrder, () =>
+                getForwardOrder(id, location?.lat, location?.long)
+            );
         };
     }, [id]);
 
@@ -115,7 +119,12 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
                 </Text>
 
                 <FlatList
-                    style={orderCustomerDetailStyle.forwardListContainer}
+                    style={{ marginHorizontal: 12 }}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    ItemSeparatorComponent={() => (
+                        <View style={{ width: 16 }} />
+                    )}
                     contentContainerStyle={{
                         justifyContent: "center",
                         alignItems: "flex-start",
@@ -133,6 +142,20 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
                 <Text style={orderCustomerDetailStyle.message}>
                     Đang tìm kiếm, vui lòng chờ 2–5 phút
                 </Text>
+                <TouchableOpacity
+                    style={{
+                        marginTop:12,
+                        paddingHorizontal: 56,
+                        paddingVertical: 6,
+                        backgroundColor: "green",
+                        borderRadius: 14,
+                    }}
+                    onPress={() => navigation.navigate("Home")}
+                >
+                    <Text style={{ fontSize: 18, color: "#fff" }}>
+                        Trang chủ
+                    </Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -144,7 +167,10 @@ export function ForwardOrderItem(props: {
 }) {
     return (
         <TouchableOpacity
-            style={orderCustomerDetailStyle.forwardStaffContainer}
+            style={[
+                orderCustomerDetailStyle.forwardStaffContainer,
+                { width: 120 },
+            ]}
             onPress={() =>
                 props.redirectStaffDetail?.(
                     props.item?.staffId || 0,
@@ -163,8 +189,8 @@ export function ForwardOrderItem(props: {
                           }
                         : defaultAvatar
                 }
-                style={orderCustomerDetailStyle.illustration}
-                resizeMode="contain"
+                style={[orderCustomerDetailStyle.illustration]}
+                resizeMode="cover"
             />
             <View style={orderCustomerDetailStyle.itemContainer}>
                 <Text>{props.item?.staff?.name || ""}</Text>

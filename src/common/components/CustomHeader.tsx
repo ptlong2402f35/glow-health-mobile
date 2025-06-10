@@ -21,10 +21,13 @@ const CustomHeader = (props: { avatarUrl?: string; name?: string }) => {
             //navigation register
             navigation.navigate("StaffInfoUpdate", {isRegister: true} as never);
         }
+        if(userLoader?.staffRole === 2) {
+            navigation.navigate("StoreStaffManager");
+            return;
+        }
         if (userRole === UserRole.Staff) {
             //navi detail
             navigation.navigate("StaffInfoUpdate");
-
         }
     };
     return (

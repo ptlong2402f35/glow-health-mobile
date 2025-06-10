@@ -31,7 +31,7 @@ export default function OrderCustomerListScreen(props: {route: any}) {
         onRefresh(cb);
     };
     const onClickDetailOrder = (item: Order) => {
-        if(item.status === OrderStatus.Pending) {
+        if(item.status === OrderStatus.Pending || item.status === OrderStatus.Denied) {
             navigation.navigate("MyOrderPendingDetail", {id: item.id} as never);
             return;
         }
@@ -39,6 +39,7 @@ export default function OrderCustomerListScreen(props: {route: any}) {
     };
 
     useEffect(() => {
+        console.log("naivgation reload");
         if(reload) {
             initLoad(true);
             return;
@@ -60,7 +61,7 @@ export default function OrderCustomerListScreen(props: {route: any}) {
                     renderItem={({ item }) => <OrderItem item={item} onPress={onClickDetailOrder}/>}
                     contentContainerStyle={{ padding: 16 }}
                     onEndReached={loadMore}
-                    onEndReachedThreshold={0.5}
+                    onEndReachedThreshold={0.05}
                     refreshControl={
                         <RefreshControl
                             refreshing={refresh || false}

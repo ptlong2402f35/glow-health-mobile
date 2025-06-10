@@ -33,7 +33,9 @@ const SignUpScreen = () => {
             phone,
             password,
             confirmPassword,
-            onSuccess: () => {},
+            onSuccess: () => {
+                navigation.navigate("Home");
+            },
             onFail: (message) => {
                 openAlertDialog?.("Thông báo", `Đăng ký thất bại: ${message}`);
             },
@@ -67,7 +69,6 @@ const SignUpScreen = () => {
                 onChangeText={(text) => setConfirmPassword(text)}
             />
 
-            {/* Nút Đăng ký */}
             <TouchableOpacity
                 style={signupStyles.button}
                 onPress={handleSignUp}
@@ -75,7 +76,6 @@ const SignUpScreen = () => {
                 <Text style={signupStyles.buttonText}>Đăng ký</Text>
             </TouchableOpacity>
 
-            {/* Nút chuyển đến trang đăng nhập */}
             <View style={signupStyles.loginContainer}>
                 <Text>Bạn đã có tài khoản? </Text>
                 <TouchableOpacity
@@ -87,7 +87,6 @@ const SignUpScreen = () => {
                 </TouchableOpacity>
             </View>
 
-            {/* <BottomTab/> */}
         </View>
     );
 };

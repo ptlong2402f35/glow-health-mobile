@@ -44,7 +44,7 @@ export default function ReviewOrderScreen(props: { route: any }) {
 
     return (
         <ScrollView
-            contentContainerStyle={[reviewOrderStyle.container, { flex: 1 }]}
+            contentContainerStyle={[reviewOrderStyle.container, { flex: 1, paddingBottom: 46 }]}
         >
             <BackButton />
             <Text style={reviewOrderStyle.header}>Đánh giá</Text>
@@ -61,7 +61,6 @@ export default function ReviewOrderScreen(props: { route: any }) {
                 Bạn có hài lòng về chất lượng dịch vụ?
             </Text>
 
-            {/* Star rating */}
             <View style={reviewOrderStyle.starContainer}>
                 {[...Array(5)].map((_, index) => (
                     <Text
@@ -97,7 +96,7 @@ export default function ReviewOrderScreen(props: { route: any }) {
             <TouchableOpacity
                 style={[
                     reviewOrderStyle.button,
-                    { position: "absolute", bottom: 34, left: 24, right: 24 },
+                    // { position: "absolute", bottom: 34, left: 24, right: 24 },
                 ]}
                 onPress={onConfirmReview}
             >

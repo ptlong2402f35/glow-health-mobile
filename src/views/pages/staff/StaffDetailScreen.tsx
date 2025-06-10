@@ -24,6 +24,7 @@ import {
     Ionicons,
     MaterialIcons,
 } from "@expo/vector-icons";
+import { StaffReviewListBox } from "./StaffListScreen";
 
 export default function StaffDetailScreen(props: { route?: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -38,6 +39,9 @@ export default function StaffDetailScreen(props: { route?: any }) {
         setPriceIds,
         totalMoney,
         setTotalMoney,
+        getStaffReview,
+        loadMoreReview,
+        reviews,
     } = useHandleStaffDetail();
     const [isValidOrder, setIsValidOrder] = useState(false);
 
@@ -98,6 +102,7 @@ export default function StaffDetailScreen(props: { route?: any }) {
     useEffect(() => {
         getStaffDetail({ id });
         setPriceIds([]);
+        getStaffReview({staffId: id});
     }, [id]);
 
     useEffect(() => {
@@ -158,6 +163,15 @@ export default function StaffDetailScreen(props: { route?: any }) {
                         {staff?.description || ""}
                     </Text>
                 </View>
+
+                {reviews?.length ? (
+                    <StaffReviewListBox
+                        reviews={reviews}
+                        onLoadMore={loadMoreReview}
+                    />
+                ) : (
+                    <View></View>
+                )}
 
                 <View>
                     {!forwardSelect &&
@@ -222,7 +236,9 @@ export function GroupServiceItem(props: {
     return (
         <View>
             <View>
-                <Text style={detailStaffStyles.sectionTitle}>{props.groupTree?.name || ""}</Text>
+                <Text style={detailStaffStyles.sectionTitle}>
+                    {props.groupTree?.name || ""}
+                </Text>
             </View>
             {props.groupTree?.staffServices?.map((sservice: any) => (
                 <StaffServiceItem

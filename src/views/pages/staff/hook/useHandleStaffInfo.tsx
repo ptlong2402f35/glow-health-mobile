@@ -4,8 +4,10 @@ import Staff from "../../../../models/Staff";
 import StaffServiceApi from "../../../../services/staffServiceApi";
 import useLoadingDialog from "../../../../hook/useLoading";
 import LocationService from "../../../../services/locationService";
+import useUserLoader from "../../../../hook/useUserLoader";
 
 export default function useHandleStaffInfo() {
+    const {reloadMe} = useUserLoader();
     const [staff, setStaff] = useState<Staff | null>(null);
     const [staffImages, setStaffImages] = useState<any[]>([]);
     const [image, setImage] = useState<any[]>([]);
@@ -28,7 +30,7 @@ export default function useHandleStaffInfo() {
         }
     }
 
-    const initDistrictList = async(search?: string, provinceId?: number) => {
+    const initDistrictList = async(search?: string, provinceId?: number, autoSelect?: (value?: number) => void) => {
         try {
             let data = await LocationService.getDistrictList({search: search || "", provinceId: provinceId});
             setDistrictList(data.map((item: any) => (
@@ -37,6 +39,7 @@ export default function useHandleStaffInfo() {
                     value: item.id
                 }
             )));
+            autoSelect?.(data?.[0]?.value);
         }
         catch (err) {
             console.error(err);
@@ -72,11 +75,14 @@ export default function useHandleStaffInfo() {
         images?: string[];
         gender?: number;
         description?: string;
+        urlImage?: string;
     }) => {
         try {
             if (!props.id) return;
+            console.log("props====", props);
             openLoadingDialog?.();
             await StaffServiceApi.updateStaffDetail(props);
+            reloadMe?.();
         } catch (err) {
             console.error(err);
         } finally {
@@ -95,10 +101,12 @@ export default function useHandleStaffInfo() {
         communeId?: number;
         type?: number;
         description?: string;
+        urlImage?: string;
     }) => {
         try {
             openLoadingDialog?.();
             await StaffServiceApi.registerStaff(props);
+            reloadMe?.();
         } catch (err) {
             console.error(err);
         } finally {

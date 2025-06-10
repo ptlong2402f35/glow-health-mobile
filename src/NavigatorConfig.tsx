@@ -28,6 +28,9 @@ import {
     StaffOrderDetail,
     StaffOrderList,
     StaffServiceUpdate,
+    StoreStaffInfo,
+    StoreStaffManager,
+    StoreStaffService,
     Support,
     Topup,
     UpdatePassword,
@@ -63,6 +66,9 @@ import RechargeScreen from "./views/pages/transaction/RechargeScreen";
 import TopUpScreen from "./views/pages/transaction/TopupScreen";
 import UserInfoUpdateScreen from "./views/pages/user/UserInfoUpdateScreen";
 import { emitter, EmitterEvent } from "./hook/emitter/mitt";
+import StoreStaffManagerScreen from "./views/pages/staff/StoreStaffManagerScreen";
+import StoreStaffInfoUpdateScreen from "./views/pages/staff/StoreStaffInfoUpdateScreen";
+import StoreStaffServiceScreen from "./views/pages/staff/StoreStaffServiceScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -223,6 +229,21 @@ export default function Router() {
                     name={UserInfoUpdate}
                     options={{}}
                     component={UserInfoUpdateScreen}
+                />
+                <Stack.Screen
+                    name={StoreStaffManager}
+                    options={{}}
+                    component={StoreStaffManagerScreen}
+                />
+                <Stack.Screen
+                    name={StoreStaffInfo}
+                    options={{}}
+                    component={StoreStaffInfoUpdateScreen}
+                />
+                <Stack.Screen
+                    name={StoreStaffService}
+                    options={{}}
+                    component={StoreStaffServiceScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

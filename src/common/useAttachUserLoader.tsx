@@ -17,6 +17,7 @@ export interface UserLoader {
     totalMoney?: number | null;
     lat?: number | null;
     long?: number | null;
+    staffRole?: number | null;
 }
 
 export interface GeoLocation {
@@ -41,10 +42,11 @@ export default function useAttachUserLoader(props: {}) {
             urlImage: data?.urlImage || userLoader?.urlImage,
             role: data?.role || userLoader?.role,
             totalMoney: data?.totalMoney || userLoader?.totalMoney,
+            staffRole: data?.staff?.staffRole || 1,
         });
     };
 
-    const me = async () => {
+    const me = async (init?: boolean) => {
         let token = await AsyncStorage.getItem("token");
         if (!token) {
             setIsLogin(false);
@@ -55,7 +57,9 @@ export default function useAttachUserLoader(props: {}) {
             setUserLoader({
                 ...data,
                 name: data?.staff?.name || "",
+                staffRole: data?.staff?.staffRole || 1,
             });
+            if (!init) return;
 
             setIsLogin(true);
             // subcribe pusher
@@ -92,13 +96,11 @@ export default function useAttachUserLoader(props: {}) {
                 lat: loc.coords.latitude,
                 long: loc.coords.longitude,
             });
-            if(loc.coords.latitude || loc.coords.longitude) {
-                setLocation(
-                    {
-                        lat: loc.coords.latitude,
-                        long: loc.coords.longitude
-                    }
-                );
+            if (loc.coords.latitude || loc.coords.longitude) {
+                setLocation({
+                    lat: loc.coords.latitude,
+                    long: loc.coords.longitude,
+                });
             }
         } catch (err) {
             console.error(err);
@@ -107,39 +109,38 @@ export default function useAttachUserLoader(props: {}) {
 
     const updateExpoToken = async (user: User) => {
         try {
-            
             let token = await getExpoToken();
-            if(user?.expoToken === token) return;
+            if (user?.expoToken === token) return;
 
-            AuthService.updateExpoToken({token: token || ""});
+            AuthService.updateExpoToken({ token: token || "" });
             console.log("update expo token done");
         } catch (err) {
             console.error(err);
         }
     };
 
-    const provideDeviceNotificationPermission = async() => {
+    const provideDeviceNotificationPermission = async () => {
         try {
-            
-           const { status: existingStatus } =
-                   await Notifications.getPermissionsAsync();
-               let finalStatus = existingStatus;
-           
-               if (existingStatus !== "granted") {
-                   const { status } = await Notifications.requestPermissionsAsync();
-                   finalStatus = status;
-               }
-           
-               if (finalStatus !== "granted") {
-                   console.log("Không cấp quyền nhận thông báo!");
-                   return;
-               }
+            const { status: existingStatus } =
+                await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+
+            if (existingStatus !== "granted") {
+                const { status } =
+                    await Notifications.requestPermissionsAsync();
+                finalStatus = status;
+            }
+
+            if (finalStatus !== "granted") {
+                console.log("Không cấp quyền nhận thông báo!");
+                return;
+            }
         } catch (err) {
             console.error(err);
         }
-    }
+    };
 
-    const provideDeviceLocationPermission = async() => {
+    const provideDeviceLocationPermission = async () => {
         try {
             const { status } =
                 await Location.requestForegroundPermissionsAsync();
@@ -149,18 +150,16 @@ export default function useAttachUserLoader(props: {}) {
             }
             const loc = await Location.getCurrentPositionAsync({});
             console.log("location user === ", loc);
-            if(loc.coords.latitude || loc.coords.longitude) {
-                setLocation(
-                    {
-                        lat: loc.coords.latitude,
-                        long: loc.coords.longitude
-                    }
-                );
+            if (loc.coords.latitude || loc.coords.longitude) {
+                setLocation({
+                    lat: loc.coords.latitude,
+                    long: loc.coords.longitude,
+                });
             }
         } catch (err) {
             console.error(err);
         }
-    }
+    };
 
     return {
         user,
@@ -174,6 +173,6 @@ export default function useAttachUserLoader(props: {}) {
         updateExpoToken,
         provideDeviceNotificationPermission,
         provideDeviceLocationPermission,
-        location
+        location,
     };
 }

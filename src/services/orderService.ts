@@ -2,6 +2,7 @@ import { DefaultModel } from "../models/IModel";
 import Order from "../models/Order";
 import OrderForwarder from "../models/OrderForwarder";
 import Staff from "../models/Staff";
+import Review from "../models/Review";
 import http from "./http";
 
 export default class OrderServiceApi {
@@ -135,6 +136,7 @@ export default class OrderServiceApi {
         note?: string;
         timerTime?: Date;
         fromForwardOrderId?: number;
+        code?: string;
     }) {
         let body = {
             staffId: props.staffId,
@@ -162,6 +164,61 @@ export default class OrderServiceApi {
             note: props.note || "",
         };
         const { data } = await http.put("/review-my-order", body);
+
+        return data;
+    }
+
+    public static async getReviews(props: { page?: number; perPage?: number }) {
+        const params: any = {
+            ...(props?.page ? { page: props?.page } : {}),
+            perPage: props?.perPage || 10,
+        };
+        const { data } = await http.get(
+            `/reviews?${new URLSearchParams(params).toString()}`
+        );
+
+        return {
+            data: data?.docs?.length ? new Review().parseList(data.docs) : [],
+            pages: data.pages,
+            currentPage: data.currentPage,
+        };
+    }
+
+    public static async getStaffReviews(props: {
+        staffId?: number;
+        page?: number;
+        perPage?: number;
+    }) {
+        const params: any = {
+            ...(props?.page ? { page: props?.page } : {}),
+            perPage: props?.perPage || 10,
+        };
+        const { data } = await http.get(
+            `/reviews-staff/${props.staffId}?${new URLSearchParams(
+                params
+            ).toString()}`
+        );
+
+        return {
+            data: data?.docs?.length ? new Review().parseList(data.docs) : [],
+            pages: data.pages,
+            currentPage: data.currentPage,
+        };
+    }
+
+    public static async getOrderEstimate(props: {
+        staffServicePriceIds?: number[];
+        voucherCode?: string;
+    }) {
+        const params: any = {
+            ...(props?.staffServicePriceIds
+                ? { staffServicePriceIds: props?.staffServicePriceIds }
+                : {}),
+            ...(props?.voucherCode ? { voucherCode: props?.voucherCode } : {}),
+        };
+        const { data } = await http.get(
+            `/order-estimate?${new URLSearchParams(params).toString()}`
+        );
 
         return data;
     }

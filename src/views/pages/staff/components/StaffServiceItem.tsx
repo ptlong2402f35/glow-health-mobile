@@ -20,10 +20,14 @@ export default function StaffServiceItem(props: {
     const [price, setPrice] = useState<number>(
         props.staffService.prices?.[0]?.price || 0
     );
+    const [unit, setUnit] = useState<string>(
+        props.staffService.prices?.[0]?.unit || "60 phút"
+    );
     const [isOrder, setIsOrder] = useState(false);
-    const onChosePrice = (id: number, price: number) => {
+    const onChosePrice = (id: number, price: number, unit: string) => {
         setPriceId(id);
         setPrice(price);
+        setUnit(unit);
         console.log("isOrder ===", isOrder);
         if (isOrder) {
             let newIds =
@@ -52,7 +56,7 @@ export default function StaffServiceItem(props: {
                 <Text style={detailStaffStyles.serviceName}>
                     {props.staffService.name || ""}
                 </Text>
-                <Text style={detailStaffStyles.servicePrice}>{price}đ</Text>
+                <Text style={detailStaffStyles.servicePrice}>{price}đ {unit ? `(${unit})` : ""}</Text>
                 <View style={detailStaffStyles.pricesBtnWrap}>
                     {props.staffService?.prices?.map((price, i) => (
                         <StaffPriceButton
@@ -80,7 +84,7 @@ export default function StaffServiceItem(props: {
 
 export function StaffPriceButton(props: {
     price: StaffServicePrice;
-    onChosePrice?: (id: any, price: any) => void;
+    onChosePrice?: (id: any, price: any, unit: any) => void;
     chosePriceId?: number;
 }) {
     return (
@@ -92,10 +96,12 @@ export function StaffPriceButton(props: {
                         : detailStaffStyles.button
                 }
                 onPress={() =>
-                    props.onChosePrice?.(props.price?.id, props.price?.price)
+                    props.onChosePrice?.(props.price?.id, props.price?.price, props.price?.unit)
                 }
             >
-                <Text style={detailStaffStyles.buttonText}>
+                <Text style={props.price?.id === props.chosePriceId
+                        ? [detailStaffStyles.buttonText, {color: "#fff"}]
+                        : detailStaffStyles.buttonText}>
                     {props.price?.price || ""}
                 </Text>
             </TouchableOpacity>

@@ -6,7 +6,7 @@ export default function useInitApp() {
     let {userLoader, isLogin, reloadMe} = useUserLoader();
 
     const handleInitApp = async () => {
-        await reloadMe?.();
+        await reloadMe?.(true);
 
         return isLogin;
     }

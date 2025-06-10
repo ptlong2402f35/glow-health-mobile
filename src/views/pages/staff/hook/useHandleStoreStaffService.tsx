@@ -1,21 +1,21 @@
 import { useState } from "react";
 import useLoadingDialog from "../../../../hook/useLoading";
-import StaffServiceApi from "../../../../services/staffServiceApi";
-import StaffService from "../../../../models/StaffService";
-import StaffServicePrice from "../../../../models/StaffServicePrice";
-import SelectServiceApi from "../../../../services/selectServiceApi";
-import ServiceGroup from "../../../../models/ServiceGroup";
+import StoreOwnerApi from "../../../../services/storeService";
+import Staff from "../../../../models/Staff";
 
-export default function useHandleStaffService(props: {}) {
+export default function useHandleStoreStaffService(props: {
+    staffId?: number;
+}) {
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
-    const [staffService, setStaffService] = useState<ServiceGroup[]>([]);
+    const [staffServices, setStaffServices] = useState<any[]>([]);
     const [prices, setPrices] = useState<any[]>([]);
 
-    const getStaffService = async () => {
+    const getStaffMemberStaffService = async (id?: number) => {
         try {
             openLoadingDialog?.();
-            let data = await StaffServiceApi.getStaffServiceBatch({});
-            setStaffService(data);
+            if(!id) return;
+            let data = await StoreOwnerApi.getStaffServiceMember({ id: id });
+            setStaffServices(data);
 
             let tmpPrices = [];
             let idx = 1;
@@ -47,49 +47,57 @@ export default function useHandleStaffService(props: {}) {
         }
     };
 
-    const createStaffService = async (props: {
+    const updateStaffMemberStaffService = async (props: {
+        data?: any;
+        id?: number;
+        onSuccess?: () => void;
+    }) => {
+        try {
+            openLoadingDialog?.();
+            let data = await StoreOwnerApi.updateStaffServiceMember(props);
+            await reloadStaffService();
+            props.onSuccess?.();
+        } catch (err: any) {
+            let message = err?.response?.data.message || "";
+            console.log("error message:", err);
+        } finally {
+            closeLoadingDialog?.();
+        }
+    };
+
+    const createStaffMemberStaffService = async (props: {
+        staffId?: number;
         name?: string;
+        code?: string;
         description?: string;
         serviceGroupId?: number;
         serviceId?: number;
     }) => {
         try {
             openLoadingDialog?.();
-            let data = await StaffServiceApi.createStaffService(props);
-            await reload();
+            let data = await StoreOwnerApi.createStaffServiceMember(props);
+            await reloadStaffService();
         } catch (err: any) {
             let message = err?.response?.data.message || "";
-            console.log("error message:", message);
+            console.log("error message:", err);
         } finally {
             closeLoadingDialog?.();
         }
     };
 
-    const updateStaffServiceBatch = async (props: { data: any }) => {
+    const deleteStaffMemberStaffService = async (props: { id: number }) => {
         try {
             openLoadingDialog?.();
-            let data = await StaffServiceApi.updateStaffServiceBatch(props);
-            await reload();
+            let data = await StoreOwnerApi.deleteStaffServiceMember(props);
+            await reloadStaffService();
         } catch (err: any) {
             let message = err?.response?.data.message || "";
-            console.log("error message:", message);
+            console.log("error message:", err);
         } finally {
             closeLoadingDialog?.();
         }
     };
-
-    const removeStaffService = async (props: { id: number }) => {
-        try {
-            openLoadingDialog?.();
-            let data = await StaffServiceApi.removeStaffService(props);
-            await reload();
-        } catch (err: any) {
-            let message = err?.response?.data.message || "";
-            console.log("error message:", message);
-        } finally {
-            closeLoadingDialog?.();
-        }
-    };
+    
 
     const updatePrices = (priceId: number, price: number) => {
         let tmp = [...prices];
@@ -102,30 +110,18 @@ export default function useHandleStaffService(props: {}) {
         setPrices(tmp);
     };
 
-    const getServiceSelect = async (props: { search?: string }) => {
-        try {
-            let data = await SelectServiceApi.getService({
-                search: props?.search,
-            });
-            return data;
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    const reload = async () => {
-        await getStaffService();
+    const reloadStaffService = async () => {
+        getStaffMemberStaffService(props?.staffId);
     };
 
     return {
-        staffService,
-        getStaffService,
+        staffServices,
         prices,
+        setPrices,
+        getStaffMemberStaffService,
+        createStaffMemberStaffService,
+        updateStaffMemberStaffService,
+        deleteStaffMemberStaffService,
         updatePrices,
-        reload,
-        createStaffService,
-        updateStaffServiceBatch,
-        removeStaffService,
-        getServiceSelect,
     };
 }

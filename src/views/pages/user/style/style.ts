@@ -1,6 +1,10 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export const userAccountStyles = StyleSheet.create({
+    wrapContainer: {
+        height: SCREEN_HEIGHT,
+    },
     loginBtnWrap: {
         display: "flex",
         alignContent: "center",

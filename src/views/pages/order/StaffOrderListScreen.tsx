@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     FlatList,
+    RefreshControl,
 } from "react-native";
 import { styles } from "./style/style";
 import useAttachUserLoader from "../../../common/useAttachUserLoader";
@@ -18,9 +19,13 @@ import Order from "../../../models/Order";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { emitter, EmitterEvent } from "../../../hook/emitter/mitt";
 import BackButton from "../../../common/components/BackButton";
+import StaffStoreListReady from "../staff/components/StaffStoreListReady";
+import useRefresh from "../../../hook/useRefresh";
 
 export default function StaffOrderListScreen() {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
+    const [openStoreDialog, setOpenStoreDialog] = useState(false);
+    const [selectOrderId, setSelectOrderId] = useState(0);
     const {
         isLogin,
         userLoader,
@@ -31,6 +36,15 @@ export default function StaffOrderListScreen() {
         reload,
         user,
     } = useStaffOrderList();
+
+    const { refresh, onRefresh } = useRefresh();
+
+    const onRefreshScreen = () => {
+        const cb = async () => {
+            reload();
+        };
+        onRefresh(cb);
+    };
 
     if (!isLogin || userLoader?.role !== 3) {
         navigate("Home");
@@ -44,7 +58,25 @@ export default function StaffOrderListScreen() {
         navigation.navigate("StaffOrderDetail", { id, ...props } as never);
     };
 
+    const onStoreOwnerReadySelect = (staffIds?: number[]) => {
+        if (userLoader?.staffRole != 2) return;
+        readyOrder({
+            id: selectOrderId,
+            staffIds: staffIds,
+            onSuccess: () => {
+                console.log("reload btw");
+                reload();
+            },
+        });
+        setOpenStoreDialog(false);
+    };
+
     const onReady = (id: number) => {
+        if (userLoader?.staffRole === 2) {
+            setOpenStoreDialog(true);
+            setSelectOrderId(id);
+            return;
+        }
         readyOrder({
             id: id,
             onSuccess: () => {
@@ -73,19 +105,27 @@ export default function StaffOrderListScreen() {
     }, []);
 
     return (
-        <View style={styles.container}>
-            <BackButton top={32}/>
-            <View style={styles.headerContainer}>
-                <Text style={styles.header}>Danh sách đơn hàng</Text>
-            </View>
-
-            <View style={styles.filterBar}>
-                <Text style={styles.filterButton}>Hà Nội</Text>
-                <Text style={styles.filterButton}>Chọn Quận/Huyện</Text>
+        <View style={[styles.container, { paddingTop: 32 }]}>
+            <BackButton top={32} />
+            <View style={[styles.headerContainer, { marginBottom: 14 }]}>
+                <Text
+                    style={[
+                        styles.header,
+                        { fontSize: 24, fontWeight: "bold" },
+                    ]}
+                >
+                    Danh sách đơn hàng
+                </Text>
             </View>
 
             <FlatList
                 data={orders}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refresh || false}
+                        onRefresh={onRefreshScreen}
+                    />
+                }
                 keyExtractor={(item, index) => index + ""}
                 renderItem={({ item }) => (
                     <StaffOrderItem
@@ -98,6 +138,11 @@ export default function StaffOrderListScreen() {
                 )}
                 style={styles.jobList}
                 onEndReached={() => loadNextPage()}
+            />
+            <StaffStoreListReady
+                open={openStoreDialog}
+                onConfirm={onStoreOwnerReadySelect}
+                onClose={() => setOpenStoreDialog(false)}
             />
         </View>
     );

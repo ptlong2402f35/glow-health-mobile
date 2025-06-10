@@ -75,7 +75,6 @@ export default function LoginScreen(props: any) {
                 Bỏ qua
             </Text>
 
-            {/* <BottomTab /> */}
         </View>
     );
 }

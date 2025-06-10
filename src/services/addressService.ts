@@ -73,6 +73,7 @@ export default class AddressService {
     }
 
     public static async removeAddress(props: { id?: number }) {
+        console.log("url delete", `/customer-address/remove-address/${props.id}`)
         const { data } = await http.delete(
             `/customer-address/remove-address/${props.id}`
         );

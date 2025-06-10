@@ -5,12 +5,15 @@ import AddressService from "../../../../services/addressService";
 import OrderServiceApi from "../../../../services/orderService";
 import CustomerAddress from "../../../../models/CustomerAddress";
 import Order from "../../../../models/Order";
+import useUserLoader from "../../../../hook/useUserLoader";
 
 export default function useCreateOrder() {
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
     const { openAlertDialog } = useAlertDialog();
+    const {reloadMe} = useUserLoader();
     let [address, setAddress] = useState("");
     let [addressId, setAddressId] = useState(0);
+    let [estimateFee, setEstimateFee] = useState(0);
     const createOrder = async (props: {
         staffId: number;
         addressId: number;
@@ -25,6 +28,7 @@ export default function useCreateOrder() {
         try {
             openLoadingDialog?.();
             let order = await OrderServiceApi.createOrder(props);
+            if(props.paymentMethodId === 2) reloadMe?.();
             props?.afterCreate?.(order);
         } catch (err: any) {
             let message = err?.response?.data.message || "";
@@ -33,6 +37,20 @@ export default function useCreateOrder() {
             closeLoadingDialog?.();
         }
     };
+
+    const estimateOrderFee = async (props: {
+        staffServicePriceIds?: number[];
+        voucherCode?: string;
+    }) => {
+        try {
+            let data = await OrderServiceApi.getOrderEstimate(props);
+            console.log("estimate", data);
+            setEstimateFee(data?.totalPay);
+        } catch (err: any) {
+            let message = err?.response?.data.message || "";
+        } finally {
+        }
+    }
 
     const getDefaultAddress = async () => {
         try {
@@ -55,5 +73,7 @@ export default function useCreateOrder() {
         setAddressId,
         createOrder,
         getDefaultAddress,
+        estimateOrderFee,
+        estimateFee,
     };
 }

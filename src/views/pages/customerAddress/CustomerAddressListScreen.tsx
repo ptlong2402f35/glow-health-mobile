@@ -19,6 +19,7 @@ export default function CustomerAddressListScreen(props: { route?: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     let fromCreateOrder = props.route?.params?.fromCreateOrder || null;
     let orderData = props.route?.params?.orderData || null;
+    let reloadForce = props.route?.params?.reload || null;
     const onUpdateAddress = (
         item?: CustomerAddress | null,
         isCreate?: boolean
@@ -30,6 +31,8 @@ export default function CustomerAddressListScreen(props: { route?: any }) {
             address: item?.address,
             note: item?.note,
             default: item?.default,
+            eProvince: item?.provinceId,
+            eDistrict: item?.districtId,
             isCreate: isCreate,
             fromCreateOrder: fromCreateOrder,
             orderData: fromCreateOrder ? orderData : null,
@@ -48,6 +51,10 @@ export default function CustomerAddressListScreen(props: { route?: any }) {
     useEffect(() => {
         getCustomerAddresses();
     }, []);
+    useEffect(() => {
+        if(!reloadForce) return;
+        getCustomerAddresses();
+    }, [reloadForce]);
     return (
         <View style={CustomerAddressListStyles.container}>
             <BackButton color="#fff" top={10} />

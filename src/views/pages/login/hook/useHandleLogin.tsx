@@ -28,7 +28,7 @@ export default function useHandleLogin() {
             console.log("access", resp.accessToken);
             await AsyncStorage.setItem("token", resp?.accessToken);
             await AsyncStorage.setItem("refreshToken", resp?.refreshToken);
-            await reloadMe?.();
+            await reloadMe?.(true);
             new PusherConfig().subcribe(resp.userId);
 
             data?.onSuccess?.();
@@ -50,11 +50,18 @@ export default function useHandleLogin() {
     }) => {
         openLoadingDialog?.();
         try {
-            await AuthService.signup({
+            let resp = await AuthService.signup({
                 phone: data.phone,
                 password: data.password,
                 confirmPassword: data.confirmPassword,
             });
+            console.log("resp signup", resp);
+            // console.log("resp login parse", JSON.parse(resp));
+            console.log("access", resp.accessToken);
+            await AsyncStorage.setItem("token", resp?.accessToken);
+            await AsyncStorage.setItem("refreshToken", resp?.refreshToken);
+            await reloadMe?.(true);
+            new PusherConfig().subcribe(resp.userId);
             data?.onSuccess?.();
         } catch (err: any) {
             let message = err?.response?.data.message || "";

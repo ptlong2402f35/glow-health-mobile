@@ -28,3 +28,6 @@ export const RechargeView = "RechargeView";
 export const PaymentStatusView = "PaymentStatusView";
 export const Topup = "Topup";
 export const UserInfoUpdate = "UserInfoUpdate";
+export const StoreStaffManager = "StoreStaffManager";
+export const StoreStaffInfo = "StoreStaffInfo";
+export const StoreStaffService = "StoreStaffService";

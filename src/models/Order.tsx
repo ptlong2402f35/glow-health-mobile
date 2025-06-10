@@ -63,6 +63,9 @@ export default class Order implements IModel<Order> {
     forwardOrderId?: number | null;
     forwardOrderStatus?: number | null;
     forwardAccept?: boolean | null;
+    serviceBooking?: any | null;
+    orderSubStatus?: number | null;
+    isOwnerReady?: boolean | null;
 
     constructor(input?: Partial<Order>) {
         this.id = input?.id || null;
@@ -105,6 +108,9 @@ export default class Order implements IModel<Order> {
         this.forwardOrderId = input?.forwardOrderId || null;
         this.forwardOrderStatus = input?.forwardOrderStatus || null;
         this.forwardAccept = input?.forwardAccept || false;
+        this.serviceBooking = input?.serviceBooking || null;
+        this.orderSubStatus = input?.orderSubStatus || null;
+        this.isOwnerReady = input?.isOwnerReady || null;
     }
 
     parse(json?: any): Order {

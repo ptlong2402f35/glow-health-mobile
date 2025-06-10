@@ -12,6 +12,7 @@ import {
     AntDesign,
     Entypo,
     FontAwesome,
+    FontAwesome6,
     Foundation,
     Ionicons,
     MaterialIcons,
@@ -31,10 +32,12 @@ export default function OrderCreateDetailScreen(props: { route?: any }) {
     const {
         address,
         addressId,
+        estimateFee,
         createOrder,
         getDefaultAddress,
         setAddress,
         setAddressId,
+        estimateOrderFee,
     } = useCreateOrder();
     let data = props.route.params.data || {};
     console.log("data route ===", props.route.params.data);
@@ -43,6 +46,7 @@ export default function OrderCreateDetailScreen(props: { route?: any }) {
     const [paymentMethod, setPaymentMethod] = useState(1);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showTimePicker, setShowTimePicker] = useState(false);
+    const [code, setCode] = useState("");
     console.log("show date ===", showDatePicker);
     console.log("show time ===", showTimePicker);
     const onSelectPaymentMethods = () => {
@@ -90,11 +94,12 @@ export default function OrderCreateDetailScreen(props: { route?: any }) {
             note: "",
             timerTime: timerTime,
             fromForwardOrderId: null,
+            code,
         });
         createOrder({
             staffId: data.staff.id,
             addressId: addressId,
-            voucherCode: "",
+            voucherCode: code,
             staffServicePriceIds: (data.prices || [])
                 ?.map((item: any) => item.id)
                 .filter((val: any) => val),
@@ -129,9 +134,28 @@ export default function OrderCreateDetailScreen(props: { route?: any }) {
             setUpdateTime(true);
         }
     }, [data.paymentMethodId || data.timerTime]);
+    const onApplyCode = () => {
+        if (code && code.length < 3) return;
+        estimateOrderFee({
+            staffServicePriceIds: (data.prices || [])
+                ?.map((item: any) => item.id)
+                .filter((val: any) => val)
+                .join(";"),
+            voucherCode: code,
+        });
+    };
+
+    useEffect(() => {
+        estimateOrderFee({
+            staffServicePriceIds: (data.prices || [])
+                ?.map((item: any) => item.id)
+                .filter((val: any) => val)
+                .join(";"),
+        });
+    }, [data]);
     return (
         <View style={orderCreateScreenStyle.container}>
-            <BackButton/>
+            <BackButton />
             <View>
                 <View style={orderCreateScreenStyle.headerContainer}>
                     <Text style={orderCreateScreenStyle.title}>
@@ -166,65 +190,144 @@ export default function OrderCreateDetailScreen(props: { route?: any }) {
                         </Text>
                         <Text style={orderCreateScreenStyle.rating}>
                             {data.staff?.rateAvg}
+                            <AntDesign name="staro" size={16} color="black" />
                         </Text>
                     </View>
                 </View>
 
-                <View style={orderCreateScreenStyle.feeContainer}>
-                    <Entypo name="text-document" size={24} color="black" />
-                    <View>
-                        {(data.prices || []).map((item: any, index: any) => (
-                            <View
-                                key={index}
-                                style={orderCreateScreenStyle.serviceWrap}
-                            >
-                                <Text style={orderCreateScreenStyle.feeText}>
-                                    {item.name}:
-                                </Text>
-                                <Text style={orderCreateScreenStyle.feeText}>
-                                    {item.price}đ
-                                </Text>
-                            </View>
-                        ))}
+                <View style={[orderCreateScreenStyle.feeContainer]}>
+                    <View
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 12,
+                        }}
+                    >
+                        <Entypo name="text-document" size={18} color="black" />
+                        <View>
+                            {(data.prices || []).map(
+                                (item: any, index: any) => (
+                                    <View
+                                        key={index}
+                                        style={[
+                                            orderCreateScreenStyle.serviceWrap,
+                                            {
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                justifyContent: "space-between",
+                                                // alignItems: "center",
+                                                // flex: 1,
+                                            },
+                                        ]}
+                                    >
+                                        <Text
+                                            style={
+                                                orderCreateScreenStyle.feeText
+                                            }
+                                        >
+                                            {item.name}:
+                                        </Text>
+                                        <Text
+                                            style={
+                                                orderCreateScreenStyle.feeText
+                                            }
+                                        >
+                                            {item.price}đ
+                                        </Text>
+                                    </View>
+                                )
+                            )}
+                        </View>
                     </View>
                     <View style={orderCreateScreenStyle.feeContainer}>
-                        <Text style={orderCreateScreenStyle.feeText}>
-                            {updateTime
-                                ? "Ngay bây giờ"
-                                : moment(timerTime).format("MM/DD/YYYY h:mm:ss") ||
-                                ""}
-                        </Text>
-                        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                        <View
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                gap: 12,
+                            }}
+                        >
+                            <MaterialIcons
+                                name="access-time"
+                                size={18}
+                                color="black"
+                            />
                             <Text style={orderCreateScreenStyle.feeText}>
+                                {updateTime
+                                    ? "Ngay bây giờ"
+                                    : moment(timerTime).format(
+                                          "MM/DD/YYYY h:mm:ss"
+                                      ) || ""}
+                            </Text>
+                        </View>
+                        <TouchableOpacity
+                            onPress={() => setShowDatePicker(true)}
+                        >
+                            <Text
+                                style={[
+                                    orderCreateScreenStyle.feeText,
+                                    { color: "green" },
+                                ]}
+                            >
                                 Hẹn lịch
                             </Text>
                         </TouchableOpacity>
+                        <View
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 12,
+                            }}
+                        >
+                            <FontAwesome6
+                                name="ticket"
+                                size={18}
+                                color="black"
+                            />
+                            <TextInput
+                                value={code}
+                                onChangeText={setCode}
+                                placeholder="Nhập voucher..."
+                                style={{
+                                    fontSize: 16,
+                                    paddingVertical: 8,
+                                    paddingHorizontal: 0,
+                                    borderWidth: 0,
+                                    color: "#000",
+                                }}
+                                placeholderTextColor="#999"
+                                onSubmitEditing={onApplyCode}
+                                returnKeyType="done"
+                            />
+                        </View>
                     </View>
                 </View>
             </View>
 
             <View style={orderCreateScreenStyle.balanceWrap}>
                 <View style={orderCreateScreenStyle.balanceContainer}>
-                    <View>
+                    <View
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
                         <Text style={orderCreateScreenStyle.balanceLabel}>
                             {paymentLabel}
                         </Text>
-                        {paymentMethod === 2 ? (
-                            <Text style={orderCreateScreenStyle.balanceAmount}>
-                                {data.totalMoney || 0}đ
-                            </Text>
-                        ) : (
-                            <View></View>
-                        )}
+                        <Text style={orderCreateScreenStyle.balanceAmount}>
+                            {estimateFee || data.totalMoney || 0}đ
+                        </Text>
                     </View>
                     <View>
                         <TouchableOpacity onPress={onSelectPaymentMethods}>
-                            <AntDesign name="edit" size={24} color="black" />
+                            <AntDesign name="edit" size={24} color="green" />
                         </TouchableOpacity>
                     </View>
                 </View>
 
-                {/* Nút đặt ngay */}
                 <TouchableOpacity
                     style={orderCreateScreenStyle.button}
                     onPress={onHandleCreateOrder}

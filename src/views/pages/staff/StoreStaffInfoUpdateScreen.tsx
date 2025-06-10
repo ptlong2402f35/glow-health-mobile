@@ -18,31 +18,35 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import useImagePicker from "../../../hook/useImagePicker";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
+import useHandleStaffStoreUpdateInfo from "./hook/useHandleStaffStoreUpdateInfo";
 
-export default function StaffInfoUpdateScreen(props?: { route?: any }) {
+export default function StoreStaffInfoUpdateScreen(props?: { route?: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     const isRegister = props?.route?.params?.isRegister;
+    const staffId = props?.route?.params?.staffId;
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [age, setAge] = useState(1);
+    const [age, setAge] = useState(18);
     const [gender, setGender] = useState(1);
     const [city, setCity] = useState(0);
     const [district, setDistrict] = useState(0);
+    const [phone, setPhone] = useState("");
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
 
     const {
         staff,
         staffImages,
         setStaffImages,
-        staffGetInfo,
-        updateStaffInfo,
-        registerStaff,
-        provinceList,
-        districtList,
-        initProvinceList,
-        initDistrictList,
         image,
         setImage,
-    } = useHandleStaffInfo();
+        getStaffDetail,
+        createStaffMember,
+        updateStaffMember,
+    } = useHandleStaffStoreUpdateInfo({ staffId: !isRegister ? staffId : 0 });
+
+    const { provinceList, districtList, initProvinceList, initDistrictList } =
+        useHandleStaffInfo();
     const { imagePicker, uploadBulkImage } = useImagePicker();
 
     const { refresh, onRefresh } = useRefresh();
@@ -50,13 +54,16 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
     const onRefreshScreen = () => {
         const cb = async () => {
             setName(staff?.name || "");
-            setAge(staff?.age || 1);
+            setAge(staff?.age || 18);
             setDescription(staff?.description || "");
             setGender(staff?.gender || 1);
             setCity(staff?.provinceId || 1);
             setDistrict(staff?.districtId || 0);
-            if (!isRegister) staffGetInfo();
+            if (!isRegister) getStaffDetail();
             if (isRegister) {
+                setPhone("");
+                setUserName("");
+                setEmail("");
                 setStaffImages(Array(6).fill(null));
                 setImage(Array(6).fill(null));
             }
@@ -153,7 +160,7 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
             register(finalImages, urlImage);
             return;
         }
-        updateStaffInfo({
+        updateStaffMember({
             id: staff?.id || 0,
             name: name,
             age: age,
@@ -162,15 +169,20 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
             gender: gender,
             description,
             images: finalImages,
-            urlImage
+            urlImage,
         });
 
-        navigation.navigate("StaffServiceUpdate");
+        navigation.navigate("StoreStaffService", {
+            staffId: staff?.id,
+        } as never);
     };
 
     const register = (images?: string[], urlImage?: string) => {
         if (isRegister) {
-            registerStaff({
+            createStaffMember({
+                phone,
+                userName,
+                email,
                 name,
                 age,
                 gender,
@@ -178,17 +190,23 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
                 provinceId: city,
                 districtId: district,
                 description: description,
-                urlImage: urlImage
+                urlImage: urlImage,
+                onSuccess: (id?: number) => {
+                    if (!id) navigation.navigate("StoreStaffManager");
+                    navigation.navigate("StoreStaffService", {
+                        staffId: id,
+                    } as never);
+                },
             });
             return;
         }
     };
 
     useEffect(() => {
-        if (!isRegister) staffGetInfo();
+        if (!isRegister) getStaffDetail(staffId);
         else {
-            setStaffImages(Array(6).fill(null));
-            setImage(Array(6).fill(null));
+            // setStaffImages(Array(6).fill(null));
+            // setImage(Array(6).fill(null));
         }
         initProvinceList();
     }, []);
@@ -199,7 +217,7 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
     }, [city]);
     useEffect(() => {
         setName(staff?.name || "");
-        setAge(staff?.age || 1);
+        setAge(staff?.age || 18);
         setDescription(staff?.description || "");
         setGender(staff?.gender || 1);
         setCity(staff?.provinceId || 1);
@@ -219,7 +237,7 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
             <BackButton left={1} top={1} />
             <View style={staffInfoUpdateStyle.titleContainer}>
                 <Text style={staffInfoUpdateStyle.sectionTitle}>
-                    Thông tin của bạn
+                    {isRegister ? "Đăng kí KTV" : "Thông tin KTV"}
                 </Text>
             </View>
 
@@ -265,6 +283,29 @@ export default function StaffInfoUpdateScreen(props?: { route?: any }) {
                     )
                 )}
             </View>
+
+            {isRegister ? (
+                <View>
+                    <Text style={staffInfoUpdateStyle.label}>
+                        Số điện thoại *
+                    </Text>
+                    <TextInput
+                        style={staffInfoUpdateStyle.input}
+                        placeholder="Số điện thoại"
+                        value={phone || ""}
+                        onChangeText={(phone) => setPhone(phone)}
+                    />
+                    <Text style={staffInfoUpdateStyle.label}>Email</Text>
+                    <TextInput
+                        style={staffInfoUpdateStyle.input}
+                        placeholder="Email"
+                        value={email || ""}
+                        onChangeText={(text) => setEmail(text)}
+                    />
+                </View>
+            ) : (
+                <View></View>
+            )}
 
             <Text style={staffInfoUpdateStyle.label}>Họ tên</Text>
             <TextInput

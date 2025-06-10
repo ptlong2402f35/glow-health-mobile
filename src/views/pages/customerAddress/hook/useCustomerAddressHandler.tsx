@@ -65,11 +65,13 @@ export default function useCustomerAddressHandler() {
         lat?: number;
         long?: number;
         note?: string;
+        afterSuccess?: () => void;
     }) => {
         try {
             openLoadingDialog?.();
             await AddressService.updateAddress(props);
             await reload();
+            props.afterSuccess?.();
         } catch (err: any) {
             let message = err?.response?.data.message || "";
             openAlertDialog?.("Thông báo", message || "Đã có lỗi xảy ra");
@@ -80,11 +82,14 @@ export default function useCustomerAddressHandler() {
 
     const removeCustomerAddress = async (props: {
         id?: number;
+        afterSuccess?: () => void;
     }) => {
         try {
             openLoadingDialog?.();
+            console.log("id", props.id);
             await AddressService.removeAddress({id: props.id});
-            await reload();
+            // await reload();
+            props.afterSuccess?.();
         } catch (err: any) {
             let message = err?.response?.data.message || "";
             openAlertDialog?.("Thông báo", message || "Đã có lỗi xảy ra");

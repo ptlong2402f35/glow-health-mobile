@@ -3,7 +3,7 @@ import * as Device from "expo-device";
 
 import PusherService from "../../services/pusherService";
 import { getCurrentRouteName, navigationRef } from "../../NavigationService";
-import { MyOrderDetail, MyOrderPendingDetail, StaffOrderList } from "../../statics/config";
+import { MyOrderDetail, MyOrderPendingDetail, StaffOrderDetail, StaffOrderList } from "../../statics/config";
 import { emitter, EmitterEvent } from "../emitter/mitt";
 import useToast from "../useToast";
 import {CommonComponentsWrapContext} from "../../common/commonComponentContextWrap"
@@ -54,13 +54,17 @@ export default class PusherConfig {
                         emitter.emit(EmitterEvent.ReloadStaffOrderList);
                     }
                     // console.log(JSON.stringify(data));
-                });
+                }); 
                 channel.bind("reload-detail-order", function (data: any) {
                     console.log(`Event data: ${JSON.stringify(data)}`);
                     console.log(`current screen:`, getCurrentRouteName());
                     if (getCurrentRouteName() === MyOrderDetail) {
-                        console.log("force reload staff order list =====");
-                        emitter.emit(EmitterEvent.ReloadStaffOrderList);
+                        console.log("force reload customer order detail =====");
+                        emitter.emit(EmitterEvent.ReloadMyOrderDetail);
+                    }
+                    if (getCurrentRouteName() === StaffOrderDetail) {
+                        console.log("force reload staff order detail =====");
+                        emitter.emit(EmitterEvent.ReloadStaffOrderDetail);
                     }
                     // console.log(JSON.stringify(data));
                 });

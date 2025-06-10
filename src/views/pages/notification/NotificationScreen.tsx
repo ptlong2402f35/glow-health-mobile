@@ -83,7 +83,7 @@ export default function NotificationScreen() {
                     keyExtractor={(item) => item.id + ""}
                     contentContainerStyle={notificationStyles.list}
                     onEndReached={loadMore}
-                    onEndReachedThreshold={0.5}
+                    onEndReachedThreshold={0.05}
                 />
             ) : (
                 <View style={notificationStyles.emptyScreen}>

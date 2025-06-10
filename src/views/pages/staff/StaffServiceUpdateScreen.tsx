@@ -17,6 +17,7 @@ import StaffServicePriceItem, {
 } from "./components/StaffServicePriceItem";
 import BackButton from "../../../common/components/BackButton";
 import ServiceGroup from "../../../models/ServiceGroup";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 export default function StaffServiceUpdateScreen() {
     const {
@@ -29,6 +30,8 @@ export default function StaffServiceUpdateScreen() {
         updateStaffServiceBatch,
         removeStaffService,
     } = useHandleStaffService({});
+    const navigation: NavigationProp<RootStackParamList> = useNavigation();
+    
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
     const [selectSService, setSelectSService] = useState<any>({});
 
@@ -68,7 +71,6 @@ export default function StaffServiceUpdateScreen() {
     }, []);
 
     return (
-        <KeyboardAvoidingView behavior={"height"} style={{ flex: 1 }}>
             <ScrollView
                 style={staffServiceStyles.container}
                 contentContainerStyle={{ flexGrow: 1 }}
@@ -96,9 +98,15 @@ export default function StaffServiceUpdateScreen() {
 
                 <TouchableOpacity
                     onPress={() => onConfirmUpdate()}
-                    style={staffServiceStyles.saveButton}
+                    style={[staffServiceStyles.saveButton, {marginTop: 2, marginBottom: 2}]}
                 >
                     <Text style={{color:"#fff", fontSize:18, fontWeight:"bold"}}>Lưu</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("Home")}
+                    style={{padding: 12, display: "flex", justifyContent: "center", alignItems: "center"}}
+                >
+                    <Text style={{color:"#000", fontSize:18, fontWeight:"bold"}}>Bỏ qua</Text>
                 </TouchableOpacity>
                 <StaffServiceCreateDialog
                     open={isOpenCreateDialog}
@@ -107,7 +115,6 @@ export default function StaffServiceUpdateScreen() {
                     selectSService={selectSService}
                 />
             </ScrollView>
-        </KeyboardAvoidingView>
     );
 }
 

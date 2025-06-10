@@ -6,12 +6,14 @@ import {
     ScrollView,
     Linking,
     Image,
+    RefreshControl,
 } from "react-native";
 import {
     Ionicons,
     MaterialIcons,
     Entypo,
     FontAwesome,
+    AntDesign,
 } from "@expo/vector-icons"; // icon libraries
 import { orderDetailStyles } from "./style/style";
 import useStaffOrderDetail from "./hook/useStaffOrderDetail";
@@ -19,9 +21,16 @@ import moment from "moment";
 import { OrderForwardStatus, OrderStatus } from "../../../models/Order";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import ReasonCancelPopup from "./component/PopUpReasonCancel";
+import useRefresh from "../../../hook/useRefresh";
+import { emitter, EmitterEvent } from "../../../hook/emitter/mitt";
+import StaffStoreListReady from "../staff/components/StaffStoreListReady";
+import useUserLoader from "../../../hook/useUserLoader";
 
 export default function OrderDetailScreen(props: { route: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
+    const { userLoader } = useUserLoader();
+    const [openStoreDialog, setOpenStoreDialog] = useState(false);
+
     const id = props.route.params.id || 0;
     const {
         order,
@@ -32,6 +41,32 @@ export default function OrderDetailScreen(props: { route: any }) {
         finishOrder,
     } = useStaffOrderDetail();
     let [popupShow, setPopupShow] = useState(false);
+    const { refresh, onRefresh } = useRefresh();
+
+    const onStoreOwnerReadySelect = (staffIds?: number[]) => {
+        if (userLoader?.staffRole != 2) return;
+        readyOrder({
+            id: order?.id || 0,
+            staffIds: staffIds,
+        });
+        setOpenStoreDialog(false);
+    };
+
+    const onReady = () => {
+        if (userLoader?.staffRole === 2) {
+            setOpenStoreDialog(true);
+            return;
+        }
+        readyOrder({ id: order?.id || 0 })
+    };
+
+    const onRefreshScreen = () => {
+        const cb = async () => {
+            if (!id) return;
+            getOrderDetail({ id });
+        };
+        onRefresh(cb);
+    };
     let statusText = "";
     if (!order?.isForwardOrder) {
         if (order?.status === OrderStatus.Pending) statusText = "Đơn mới";
@@ -47,6 +82,7 @@ export default function OrderDetailScreen(props: { route: any }) {
             statusText = "Đã hết hạn";
         if ([OrderStatus.Finished].includes(order?.status || 0))
             statusText = "Đã hoàn thành";
+        if (order?.isOwnerReady) statusText = "Chờ khách chọn";
     } else {
         if (
             order?.forwardAccept &&
@@ -79,9 +115,27 @@ export default function OrderDetailScreen(props: { route: any }) {
         if (!id) return;
         getOrderDetail({ id });
     }, [id]);
+
+    useEffect(() => {
+        emitter.on(EmitterEvent.ReloadStaffOrderDetail, () =>
+            getOrderDetail({ id })
+        );
+        return () => {
+            emitter.off(EmitterEvent.ReloadStaffOrderDetail, () =>
+                getOrderDetail({ id })
+            );
+        };
+    }, []);
     return (
         <View style={orderDetailStyles.container}>
-            <ScrollView>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refresh || false}
+                        onRefresh={onRefreshScreen}
+                    />
+                }
+            >
                 <View style={orderDetailStyles.header}>
                     <Ionicons
                         name="arrow-back"
@@ -95,7 +149,14 @@ export default function OrderDetailScreen(props: { route: any }) {
                 </View>
 
                 <View style={orderDetailStyles.userInfo}>
-                    <View style={orderDetailStyles.avatar}></View>
+                    {order?.customerUser?.urlImage ? (
+                        <Image
+                            source={{ uri: order?.customerUser?.urlImage }}
+                            style={orderDetailStyles.avatar}
+                        />
+                    ) : (
+                        <View style={orderDetailStyles.avatar}></View>
+                    )}
                     <View>
                         <Text style={orderDetailStyles.userName}>
                             {`Khách nam, Việt Nam`}
@@ -139,19 +200,30 @@ export default function OrderDetailScreen(props: { route: any }) {
                     </View>
                 </View>
 
-                {/* Service Info */}
                 <View style={orderDetailStyles.infoRow}>
                     <Entypo name="text-document" size={20} />
-                    {order?.prices?.map((item) => (
-                        <View key={item.id}>
-                            <Text style={orderDetailStyles.infoText}>
-                                {item.staffService?.name || ""}
-                            </Text>
-                            <Text style={orderDetailStyles.points}>
-                                {item.unit}
-                            </Text>
-                        </View>
-                    ))}
+                    <View style={{ flex: 1 }}>
+                        {(order?.prices || order?.serviceBooking)?.map(
+                            (item: any) => (
+                                <View
+                                    key={item.id}
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        justifyContent: "space-between",
+                                        flex: 1,
+                                    }}
+                                >
+                                    <Text style={orderDetailStyles.infoText}>
+                                        {item.staffService?.name || ""}
+                                    </Text>
+                                    <Text style={orderDetailStyles.points}>
+                                        {item.unit}
+                                    </Text>
+                                </View>
+                            )
+                        )}
+                    </View>
                 </View>
 
                 <View style={orderDetailStyles.infoRow}>
@@ -166,9 +238,27 @@ export default function OrderDetailScreen(props: { route: any }) {
                     </Text>
                 </View>
 
+                {order?.customerUser?.phone ? (
+                    <View style={orderDetailStyles.infoRow}>
+                        <AntDesign name="phone" size={20} color="red" />
+                        <Text
+                            style={[
+                                orderDetailStyles.infoText,
+                                { color: "red" },
+                            ]}
+                        >
+                            Sđt: {order?.customerUser?.phone || ""}
+                        </Text>
+                    </View>
+                ) : (
+                    <View></View>
+                )}
+
                 <View style={orderDetailStyles.infoRow}>
-                    <Ionicons name="location-outline" size={20} />
-                    <Text style={orderDetailStyles.infoText}>
+                    <Ionicons name="location-outline" size={20} color={"red"} />
+                    <Text
+                        style={[orderDetailStyles.infoText, { color: "red" }]}
+                    >
                         Địa chỉ: {order?.address || ""}
                     </Text>
                 </View>
@@ -183,6 +273,7 @@ export default function OrderDetailScreen(props: { route: any }) {
                 </View>
             </ScrollView>
             {order?.status === OrderStatus.Pending &&
+            !order?.isOwnerReady &&
             (order?.isForwardOrder
                 ? order?.forwardAccept
                     ? false
@@ -199,7 +290,7 @@ export default function OrderDetailScreen(props: { route: any }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={orderDetailStyles.readyBtn}
-                        onPress={() => readyOrder({ id: order.id || 0 })}
+                        onPress={() => onReady()}
                     >
                         <Text style={{ color: "#fff", fontWeight: "bold" }}>
                             Ứng tuyển
@@ -241,6 +332,11 @@ export default function OrderDetailScreen(props: { route: any }) {
             ) : (
                 <View></View>
             )}
+            <StaffStoreListReady
+                open={openStoreDialog}
+                onConfirm={onStoreOwnerReadySelect}
+                onClose={() => setOpenStoreDialog(false)}
+            />
         </View>
     );
 }

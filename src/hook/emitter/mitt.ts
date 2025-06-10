@@ -10,6 +10,7 @@ export enum EmitterEvent {
     Redirect = "Redirect",
     ReloadForwardOrder = "ReloadForwardOrder",
     ReloadMyOrderDetail = "ReloadMyOrderDetail",
+    ReloadStaffOrderDetail = "ReloadStaffOrderDetail",
 }
 
 export const emitter = mitt();

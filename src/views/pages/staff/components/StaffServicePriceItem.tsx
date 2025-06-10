@@ -36,7 +36,7 @@ export default function StaffServicePriceItem(props: {
         props.removeStaffService({
             id: staffServicePrices?.[0]?.staffServiceId,
         });
-        // setIsOpen(false);
+        setIsOpen(false);
     }
 
     console.log(" prices ===", staffServicePrices);
