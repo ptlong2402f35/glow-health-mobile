@@ -12,11 +12,14 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useHandleLogin from "./hook/useHandleLogin";
 import useAlertDialog from "../../../hook/useAlert";
 import BottomTab from "../../../common/components/BottomTab";
+import useBottomTab from "../../../hook/useBottomTab";
 // import BottomTab from "../../../common/components/BottomTab";
 
 const SignUpScreen = () => {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     const { openAlertDialog, closeAlertDialog } = useAlertDialog();
+    const { changeTab } = useBottomTab();
+
     const [phone, setPhone] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [password, setPassword] = useState("");
@@ -35,6 +38,7 @@ const SignUpScreen = () => {
             confirmPassword,
             onSuccess: () => {
                 navigation.navigate("Home");
+                changeTab?.("Home");
             },
             onFail: (message) => {
                 openAlertDialog?.("Thông báo", `Đăng ký thất bại: ${message}`);
@@ -86,7 +90,6 @@ const SignUpScreen = () => {
                     <Text style={signupStyles.loginText}>Đăng nhập ngay</Text>
                 </TouchableOpacity>
             </View>
-
         </View>
     );
 };

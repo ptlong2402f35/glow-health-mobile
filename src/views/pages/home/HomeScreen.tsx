@@ -30,35 +30,11 @@ const data = [
         id: 2,
         title: "Làm đẹp tại nhà",
         params: {
-            groupService: "training",
-            groupServiceId: 1,
-            bannerId: "training-at-home"
+            groupService: "nail",
+            groupServiceId: 2,
+            bannerId: "nail-at-home",
         },
         image: "https://glow-prod-images.s3.ap-southeast-1.amazonaws.com/spa-images/eafe4bbf-c6ad-496b-bd22-5587e74da7c8.png",
-    },
-    {
-        id: 3,
-        title: "Hỗ trợ tập luyện",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ43oVazPnwziT2RBe0A2_vEHI5UCFYhuwjug&s",
-    },
-    {
-        id: 4,
-        title: "Massage, làm đẹp tại nhà",
-        params: {
-            groupService: "Massage",
-            groupServiceId: 1,
-        },
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxvaJdUHl-RzWQPtVKdPa4wNiLkV7SM--1Ig&s",
-    },
-    {
-        id: 5,
-        title: "Làm đẹp tại nhà",
-        image: "https://glow-prod-images.s3.ap-southeast-1.amazonaws.com/spa-images/eafe4bbf-c6ad-496b-bd22-5587e74da7c8.png",
-    },
-    {
-        id: 6,
-        title: "Hỗ trợ tập luyện",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ43oVazPnwziT2RBe0A2_vEHI5UCFYhuwjug&s",
     },
 ];
 
@@ -74,7 +50,7 @@ const HomeScreen = () => {
                         key={item.id}
                         style={styles.card}
                         onPress={() => {
-                            navigation.navigate("StaffList", {id: item?.params?.bannerId || ""} as never);
+                            navigation.navigate("StaffList", {id: item?.params?.bannerId || "", serviceGroupId: item.params.groupServiceId} as never);
                         }}
                     >
                         <Image

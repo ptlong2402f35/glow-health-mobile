@@ -6,9 +6,11 @@ import useLoadingDialog from "../../../hook/useLoading";
 import useHandleLogin from "./hook/useHandleLogin";
 import useAlertDialog from "../../../hook/useAlert";
 import BottomTab from "../../../common/components/BottomTab";
+import useBottomTab from "../../../hook/useBottomTab";
 // import BottomTab from "../../../common/components/BottomTab";
 
 export default function LoginScreen(props: any) {
+    const { changeTab } = useBottomTab();
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
     const { openAlertDialog, closeAlertDialog } = useAlertDialog();
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
@@ -23,6 +25,7 @@ export default function LoginScreen(props: any) {
             password,
             onSuccess: () => {
                 navigation.navigate("Home");
+                changeTab?.("Home");
             },
             onFail: (message) => {
                 openAlertDialog?.(
@@ -70,11 +73,11 @@ export default function LoginScreen(props: any) {
                 style={styles.skipBtnText}
                 onPress={() => {
                     navigation.navigate("Home");
+                    changeTab?.("Home")
                 }}
             >
                 Bỏ qua
             </Text>
-
         </View>
     );
 }

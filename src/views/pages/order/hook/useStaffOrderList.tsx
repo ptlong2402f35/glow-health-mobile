@@ -6,8 +6,10 @@ import OrderServiceApi from "../../../../services/orderService";
 import useLoadingDialog from "../../../../hook/useLoading";
 import useAlertDialog from "../../../../hook/useAlert";
 import StoreOrderServiceApi from "../../../../services/storeOrderService";
+import useBottomTab from "../../../../hook/useBottomTab";
 
-export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
+export default function useStaffOrderList(eprops?: { forStore?: boolean }) {
+    const { changeTab } = useBottomTab();
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
     const { openAlertDialog } = useAlertDialog();
     const { userLoader, isLogin, user } = useUserLoader();
@@ -16,13 +18,14 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
     const [forwardOffset, setForwardOffset] = useState<number>(0);
     if (!isLogin || userLoader?.role !== 3) {
         navigate("Home");
+        changeTab?.("Home");
     }
 
     const getOrderList = async (init?: boolean) => {
         try {
             openLoadingDialog?.();
-            if(eprops?.forStore || userLoader?.staffRole === 2) {
-                if(init) {
+            if (eprops?.forStore || userLoader?.staffRole === 2) {
+                if (init) {
                     let {
                         orders: newOrders,
                         orderOffsetCount,
@@ -32,7 +35,7 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
                         forwardOffset: 0,
                     });
                     console.log("orders", newOrders);
-                    setOrders([ ...newOrders]);
+                    setOrders([...newOrders]);
                     setOrderOffset(orderOffsetCount);
                     setForwardOffset(forwardOffsetCount);
                     closeLoadingDialog?.();
@@ -51,7 +54,7 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
                 setForwardOffset(forwardOffsetCount);
                 return;
             }
-            if(init) {
+            if (init) {
                 let {
                     orders: newOrders,
                     orderOffsetCount,
@@ -60,7 +63,7 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
                     orderOffset: 0,
                     forwardOffset: 0,
                 });
-                setOrders([ ...newOrders]);
+                setOrders([...newOrders]);
                 setOrderOffset(orderOffsetCount);
                 setForwardOffset(forwardOffsetCount);
                 closeLoadingDialog?.();
@@ -93,9 +96,12 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
     }) => {
         try {
             openLoadingDialog?.();
-            if(eprops?.forStore || userLoader?.staffRole === 2) {
-                console.log("do owner ready")
-                await StoreOrderServiceApi.readyOrder({ id: props.id, staffIds: props.staffIds });
+            if (eprops?.forStore || userLoader?.staffRole === 2) {
+                console.log("do owner ready");
+                await StoreOrderServiceApi.readyOrder({
+                    id: props.id,
+                    staffIds: props.staffIds,
+                });
                 props.onSuccess?.();
                 return;
             }
@@ -105,7 +111,6 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
             let message = err?.response?.data.message || "";
             props.onFail?.(message);
             openAlertDialog?.("Thông báo", message || "Đã có lỗi xảy ra");
-
         } finally {
             closeLoadingDialog?.();
         }
@@ -118,7 +123,7 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
     }) => {
         try {
             openLoadingDialog?.();
-            if(eprops?.forStore || userLoader?.staffRole === 2) {
+            if (eprops?.forStore || userLoader?.staffRole === 2) {
                 await StoreOrderServiceApi.rejectOrder({ id: props.id });
                 props.onSuccess?.();
                 return;
@@ -129,7 +134,6 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
             let message = err?.response?.data.message || "";
             props.onFail?.(message);
             openAlertDialog?.("Thông báo", message || "Đã có lỗi xảy ra");
-
         } finally {
             closeLoadingDialog?.();
         }
@@ -147,6 +151,6 @@ export default function useStaffOrderList(eprops?: {forStore?: boolean}) {
         readyOrder,
         rejectOrder,
         reload,
-        user
+        user,
     };
 }

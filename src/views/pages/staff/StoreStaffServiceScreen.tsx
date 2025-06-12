@@ -19,9 +19,11 @@ import BackButton from "../../../common/components/BackButton";
 import ServiceGroup from "../../../models/ServiceGroup";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useHandleStoreStaffService from "./hook/useHandleStoreStaffService";
+import useBottomTab from "../../../hook/useBottomTab";
 
 export default function StoreStaffServiceScreen(props: { route: any }) {
     const staffId = props?.route?.params?.staffId || 0;
+        const {changeTab} = useBottomTab();   
     const {
         staffServices,
         getStaffMemberStaffService,
@@ -112,7 +114,10 @@ export default function StoreStaffServiceScreen(props: { route: any }) {
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={() => navigation.navigate("Home")}
+                onPress={() => {
+                    navigation.navigate("Home")
+                    changeTab?.("Home")
+                }}
                 style={{
                     padding: 12,
                     display: "flex",

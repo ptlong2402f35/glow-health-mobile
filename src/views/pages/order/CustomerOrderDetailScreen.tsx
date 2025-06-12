@@ -109,7 +109,7 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
                 contentContainerStyle={{ paddingBottom: 46 }}
                 showsVerticalScrollIndicator={false}
             >
-                <BackButton />
+                <BackButton top={4}/>
                 <Text style={customerOrderDetailStyle.header}>
                     Chi tiết đơn
                 </Text>
@@ -121,7 +121,7 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
                             : DefaultAvatar
                     }
                     style={customerOrderDetailStyle.image}
-                    resizeMode="contain"
+                    resizeMode="cover"
                 />
 
                 <View style={customerOrderDetailStyle.statusContainer}>
@@ -130,8 +130,7 @@ export default function CustomerOrderDetailScreen(props: { route: any }) {
                             customerOrderDetailStyle.statusText,
                             {
                                 color:
-                                    customerOrder?.status ===
-                                    OrderStatus.Finished
+                                    [OrderStatus.Finished, OrderStatus.Approved, OrderStatus.Pending].includes(customerOrder?.status || 0)
                                         ? "green"
                                         : "red",
                             },

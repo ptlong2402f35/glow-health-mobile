@@ -17,12 +17,14 @@ export default class StaffServiceApi {
         storeId?: number;
         coordinateDistance?: number;
         search?: string;
+        serviceGroupId?: number;
     }) {
         const params: any = {
             ...(props?.page ? { page: props?.page } : {}),
             ...(props?.perPage ? { perPage: props?.perPage } : {}),
             ...(props?.phone ? { phone: props?.phone } : {}),
             ...(props?.name ? { name: props?.name } : {}),
+            ...(props?.serviceGroupId ? { serviceGroupId: props?.serviceGroupId } : {}),
             ...(props?.useCoordinate
                 ? { useCoordinate: props?.useCoordinate }
                 : {}),

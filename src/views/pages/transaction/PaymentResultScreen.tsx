@@ -1,25 +1,33 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
+import useBottomTab from "../../../hook/useBottomTab";
 
-export default function PaymentResultScreen(props: {route: any}) {
+export default function PaymentResultScreen(props: { route: any }) {
     let status = props.route.params.status;
     return (
-        <View style={{flex: 1}}>
-            {status ? <PaymentSuccess/> : <PaymentFailure/>}
+        <View style={{ flex: 1 }}>
+            {status ? <PaymentSuccess /> : <PaymentFailure />}
         </View>
     );
 }
 
 export const PaymentSuccess = () => {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
+    const { changeTab } = useBottomTab();
 
     return (
         <View style={sstyles.container}>
             <Text style={sstyles.icon}>✅</Text>
             <Text style={sstyles.title}>Thanh toán thành công!</Text>
-            
-            <TouchableOpacity  style={styles.btn} onPress={() => navigation.navigate("Home")}>
+
+            <TouchableOpacity
+                style={styles.btn}
+                onPress={() => {
+                    navigation.navigate("Home");
+                    changeTab?.("Home");
+                }}
+            >
                 <Text style={sstyles.message2}>Quay về trang chủ</Text>
             </TouchableOpacity>
         </View>
@@ -34,7 +42,10 @@ export const PaymentFailure = () => {
             <Text style={styles.icon}>❌</Text>
             <Text style={styles.title}>Thanh toán thất bại!</Text>
             <Text style={styles.message}>Đã xảy ra lỗi. Vui lòng thử lại.</Text>
-            <TouchableOpacity  style={styles.btn} onPress={() => navigation.navigate("Wallet")}>
+            <TouchableOpacity
+                style={styles.btn}
+                onPress={() => navigation.navigate("Wallet")}
+            >
                 <Text style={sstyles.message2}>Thử lại</Text>
             </TouchableOpacity>
         </View>
@@ -98,6 +109,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingVertical: 8,
         paddingHorizontal: 18,
-        borderRadius: 8
-    }
+        borderRadius: 8,
+    },
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -9,7 +9,12 @@ import {
 import HomeScreen from "../../views/pages/home/HomeScreen";
 import LoginScreen from "../../views/pages/login/LoginScreen";
 import SignUpScreen from "../../views/pages/login/SignupScreen";
-import { NavigationProp, useNavigation, useNavigationState } from "@react-navigation/native";
+import {
+    NavigationProp,
+    useFocusEffect,
+    useNavigation,
+    useNavigationState,
+} from "@react-navigation/native";
 import useBottomTab from "../../hook/useBottomTab";
 import useUserLoader from "../../hook/useUserLoader";
 import { StaffRole } from "../../models/Staff";
@@ -18,9 +23,9 @@ import { UserRole } from "../../models/User";
 export default function BottomTab() {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     const currentRouteName = useNavigationState((state) => {
-            const route = state.routes[state.index];
-            return route.name;
-        });
+        const route = state.routes[state.index];
+        return route.name;
+    });
     const { tabName, changeTab } = useBottomTab();
     const { isLogin, userLoader } = useUserLoader();
     let role = userLoader?.role;
@@ -33,6 +38,7 @@ export default function BottomTab() {
     };
 
     useEffect(() => {
+        console.log("current,", currentRouteName);
         if(tabName != currentRouteName) {
             changeTab?.(currentRouteName);
         }

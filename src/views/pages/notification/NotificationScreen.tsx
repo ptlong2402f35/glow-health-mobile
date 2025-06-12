@@ -8,29 +8,40 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { notificationStyles } from "./styles/style";
-import Notification, { NotificationActionType } from "../../../models/Notification";
+import Notification, {
+    NotificationActionType,
+} from "../../../models/Notification";
 import useNotificationHandle from "./hook/useNotificationHandle";
 import moment from "moment";
 import BackButton from "../../../common/components/BackButton";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import useBottomTab from "../../../hook/useBottomTab";
 export default function NotificationScreen() {
+    const { changeTab } = useBottomTab();
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     const { notifications, readMyNotification, loadMore, getMyNotifications } =
         useNotificationHandle();
 
-    const onClickNoti = (id?: number, actiontType?: number, noti?: Notification) => {
+    const onClickNoti = (
+        id?: number,
+        actiontType?: number,
+        noti?: Notification
+    ) => {
         // handle click notification
-        switch(actiontType) {
+        switch (actiontType) {
             case NotificationActionType.Wallet: {
                 navigation.navigate("Wallet");
                 break;
             }
             case NotificationActionType.OrderDetail: {
-                navigation.navigate("StaffOrderDetail", {id: noti?.referenceId} as never);
+                navigation.navigate("StaffOrderDetail", {
+                    id: noti?.referenceId,
+                } as never);
                 break;
             }
             case NotificationActionType.OrderList: {
                 navigation.navigate("StaffOrderList");
+                changeTab?.("StaffOrderList");
                 break;
             }
             case NotificationActionType.StaffProfile: {
@@ -39,16 +50,20 @@ export default function NotificationScreen() {
             }
             case NotificationActionType.StaffServiceInfo: {
                 navigation.navigate("Home");
+                changeTab?.("Home");
 
                 break;
             }
             case NotificationActionType.Home: {
                 navigation.navigate("Home");
+                changeTab?.("Home");
 
                 break;
             }
             case NotificationActionType.OrderCustomerDetail: {
-                navigation.navigate("MyOrderDetail", {id: noti?.referenceId} as never);
+                navigation.navigate("MyOrderDetail", {
+                    id: noti?.referenceId,
+                } as never);
 
                 break;
             }
@@ -58,7 +73,6 @@ export default function NotificationScreen() {
                 break;
             }
             default: {
-
             }
         }
 
@@ -70,7 +84,7 @@ export default function NotificationScreen() {
     }, []);
     return (
         <View style={notificationStyles.container}>
-            <BackButton color="#fff"/>
+            <BackButton color="#fff" />
             <View style={notificationStyles.header}>
                 <Text style={notificationStyles.headerTitle}>Thông báo</Text>
             </View>
@@ -96,10 +110,18 @@ export default function NotificationScreen() {
 
 export function NotiItem(props: {
     item: Notification;
-    onClickDetail: (id?: number, actiontType?: number, noti?: Notification) => void;
+    onClickDetail: (
+        id?: number,
+        actiontType?: number,
+        noti?: Notification
+    ) => void;
 }) {
     const onclickItem = () => {
-        props.onClickDetail(props?.item?.id || 0, props?.item?.actionType || 0, props.item);
+        props.onClickDetail(
+            props?.item?.id || 0,
+            props?.item?.actionType || 0,
+            props.item
+        );
     };
     return (
         <TouchableOpacity style={notificationStyles.card} onPress={onclickItem}>

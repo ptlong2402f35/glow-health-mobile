@@ -18,6 +18,7 @@ import { reviewOrderStyle } from "../order/style/style";
 
 export default function StaffListScreen(props: { route?: any }) {
     let id = props.route.params.id;
+    let serviceGroupId = props.route.params.serviceGroupId;
     let [search, setSearch] = useState("");
     let {
         staffs,
@@ -36,15 +37,15 @@ export default function StaffListScreen(props: { route?: any }) {
     };
 
     const onSearchStaffs = () => {
-        if (!search || !search.length) getStaffList({ init: true });
+        if (!search || !search.length) getStaffList({ init: true, serviceGroupId });
         console.log("xxxx search", search);
         if (search.length >= 3) {
-            getStaffList({ name: search, init: true });
+            getStaffList({ name: search, init: true, serviceGroupId });
         }
     };
 
     useEffect(() => {
-        getStaffList({init: true});
+        getStaffList({init: true, serviceGroupId});
         getPinnedStaffList({ id });
         getAllReview(1, true);
         setSearch("");

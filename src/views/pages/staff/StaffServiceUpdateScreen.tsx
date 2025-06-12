@@ -18,8 +18,10 @@ import StaffServicePriceItem, {
 import BackButton from "../../../common/components/BackButton";
 import ServiceGroup from "../../../models/ServiceGroup";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import useBottomTab from "../../../hook/useBottomTab";
 
 export default function StaffServiceUpdateScreen() {
+    const { changeTab } = useBottomTab();
     const {
         staffService,
         getStaffService,
@@ -31,7 +33,7 @@ export default function StaffServiceUpdateScreen() {
         removeStaffService,
     } = useHandleStaffService({});
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
-    
+
     const [isOpenCreateDialog, setIsOpenCreateDialog] = useState(false);
     const [selectSService, setSelectSService] = useState<any>({});
 
@@ -71,50 +73,69 @@ export default function StaffServiceUpdateScreen() {
     }, []);
 
     return (
-            <ScrollView
-                style={staffServiceStyles.container}
-                contentContainerStyle={{ flexGrow: 1 }}
-            >
-                <BackButton top={6} left={6} />
-                <View style={staffServiceStyles.titleContainer}>
-                    <Text style={staffServiceStyles.headerText}>
-                        Thông tin dịch vụ
-                    </Text>
-                </View>
-                <Text style={staffServiceStyles.note}>
-                    Lưu ý: Chỉ thêm các dịch vụ bạn cung cấp
+        <ScrollView
+            style={staffServiceStyles.container}
+            contentContainerStyle={{ flexGrow: 1 }}
+        >
+            <BackButton top={6} left={6} />
+            <View style={staffServiceStyles.titleContainer}>
+                <Text style={staffServiceStyles.headerText}>
+                    Thông tin dịch vụ
                 </Text>
+            </View>
+            <Text style={staffServiceStyles.note}>
+                Lưu ý: Chỉ thêm các dịch vụ bạn cung cấp
+            </Text>
 
-                {staffService.map((service, index) => (
-                    <StaffServiceGroupItem
-                        key={service.id}
-                        serviceGroup={service}
-                        updatePrices={updatePrices}
-                        setIsOpenCreateDialog={openCreateDialog}
-                        removeStaffService={removeStaffService}
-                        prices={prices}
-                    />
-                ))}
-
-                <TouchableOpacity
-                    onPress={() => onConfirmUpdate()}
-                    style={[staffServiceStyles.saveButton, {marginTop: 2, marginBottom: 2}]}
-                >
-                    <Text style={{color:"#fff", fontSize:18, fontWeight:"bold"}}>Lưu</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate("Home")}
-                    style={{padding: 12, display: "flex", justifyContent: "center", alignItems: "center"}}
-                >
-                    <Text style={{color:"#000", fontSize:18, fontWeight:"bold"}}>Bỏ qua</Text>
-                </TouchableOpacity>
-                <StaffServiceCreateDialog
-                    open={isOpenCreateDialog}
-                    onClose={() => setIsOpenCreateDialog(false)}
-                    onConfirm={onConfirmCreateSService}
-                    selectSService={selectSService}
+            {staffService.map((service, index) => (
+                <StaffServiceGroupItem
+                    key={service.id}
+                    serviceGroup={service}
+                    updatePrices={updatePrices}
+                    setIsOpenCreateDialog={openCreateDialog}
+                    removeStaffService={removeStaffService}
+                    prices={prices}
                 />
-            </ScrollView>
+            ))}
+
+            <TouchableOpacity
+                onPress={() => onConfirmUpdate()}
+                style={[
+                    staffServiceStyles.saveButton,
+                    { marginTop: 2, marginBottom: 2 },
+                ]}
+            >
+                <Text
+                    style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}
+                >
+                    Lưu
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate("Home");
+                    changeTab?.("Home");
+                }}
+                style={{
+                    padding: 12,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Text
+                    style={{ color: "#000", fontSize: 18, fontWeight: "bold" }}
+                >
+                    Bỏ qua
+                </Text>
+            </TouchableOpacity>
+            <StaffServiceCreateDialog
+                open={isOpenCreateDialog}
+                onClose={() => setIsOpenCreateDialog(false)}
+                onConfirm={onConfirmCreateSService}
+                selectSService={selectSService}
+            />
+        </ScrollView>
     );
 }
 

@@ -21,9 +21,11 @@ import { emitter, EmitterEvent } from "../../../hook/emitter/mitt";
 import BackButton from "../../../common/components/BackButton";
 import StaffStoreListReady from "../staff/components/StaffStoreListReady";
 import useRefresh from "../../../hook/useRefresh";
+import useBottomTab from "../../../hook/useBottomTab";
 
 export default function StaffOrderListScreen() {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
+    const { changeTab } = useBottomTab();
     const [openStoreDialog, setOpenStoreDialog] = useState(false);
     const [selectOrderId, setSelectOrderId] = useState(0);
     const {
@@ -48,6 +50,7 @@ export default function StaffOrderListScreen() {
 
     if (!isLogin || userLoader?.role !== 3) {
         navigate("Home");
+        changeTab?.("Home");
     }
 
     const loadNextPage = () => {

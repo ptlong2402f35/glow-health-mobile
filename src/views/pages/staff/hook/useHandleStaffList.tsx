@@ -23,6 +23,7 @@ export default function useHandleStaffList() {
         perPage?: number;
         name?: string;
         init?: boolean;
+        serviceGroupId?: number;
     }) => {
         try {
             let resp = await StaffServiceApi.getStaffList({
@@ -32,6 +33,7 @@ export default function useHandleStaffList() {
                 useCoordinate: location?.lat || location?.long ? true : false,
                 coordinateLat: location?.lat || 0,
                 coordinateLong: location?.long || 0,
+                serviceGroupId: data?.serviceGroupId
             });
             
             setStaffPage(resp.currentPage);

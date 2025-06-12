@@ -5,9 +5,11 @@ import StaffService from "../../../../models/StaffService";
 import StaffServicePrice from "../../../../models/StaffServicePrice";
 import SelectServiceApi from "../../../../services/selectServiceApi";
 import ServiceGroup from "../../../../models/ServiceGroup";
+import useAlertDialog from "../../../../hook/useAlert";
 
 export default function useHandleStaffService(props: {}) {
     const { openLoadingDialog, closeLoadingDialog } = useLoadingDialog();
+    const {openAlertDialog} = useAlertDialog();
     const [staffService, setStaffService] = useState<ServiceGroup[]>([]);
     const [prices, setPrices] = useState<any[]>([]);
 
@@ -70,6 +72,7 @@ export default function useHandleStaffService(props: {}) {
             openLoadingDialog?.();
             let data = await StaffServiceApi.updateStaffServiceBatch(props);
             await reload();
+            openAlertDialog?.("Thông báo", "cập nhật thành công");
         } catch (err: any) {
             let message = err?.response?.data.message || "";
             console.log("error message:", message);

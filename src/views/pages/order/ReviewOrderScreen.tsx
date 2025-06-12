@@ -13,9 +13,11 @@ import BackButton from "../../../common/components/BackButton";
 import useReviewOrder from "./hook/useReviewOrder";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useAlertDialog from "../../../hook/useAlert";
+import useBottomTab from "../../../hook/useBottomTab";
 const DefaultAvatar = require("../../../../assets/defaultAvatar.png");
 
 export default function ReviewOrderScreen(props: { route: any }) {
+        const {changeTab} = useBottomTab();
     const urlImage = props.route.params?.urlImage || "";
     const staffName = props.route.params?.staffName || "";
     const serviceNames = props.route.params?.serviceNames || [];
@@ -36,7 +38,10 @@ export default function ReviewOrderScreen(props: { route: any }) {
                 openAlertDialog?.(
                     "Thông báo",
                     "Cảm ơn bạn đã đánh giá dịch vụ",
-                    () => navigation.navigate("Home")
+                    () => {
+                        navigation.navigate("Home")
+                        changeTab?.("Home")
+                    }
                 );
             },
         });

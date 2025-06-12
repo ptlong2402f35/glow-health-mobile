@@ -27,10 +27,12 @@ import {
 } from "@expo/vector-icons";
 import useUserLoader from "../../../hook/useUserLoader";
 import { emitter, EmitterEvent } from "../../../hook/emitter/mitt";
+import useBottomTab from "../../../hook/useBottomTab";
 export default function OrderCustomerPendingScreen(props: { route: any }) {
     const navigation: NavigationProp<RootStackParamList> = useNavigation();
     let id = props.route.params?.id || 0;
     let { location } = useUserLoader();
+    const { changeTab } = useBottomTab();
 
     const { order, forwardOrder, getForwardOrder, cancelOrderByCustomer } =
         useCustomerOrderDetail();
@@ -144,13 +146,16 @@ export default function OrderCustomerPendingScreen(props: { route: any }) {
                 </Text>
                 <TouchableOpacity
                     style={{
-                        marginTop:12,
+                        marginTop: 12,
                         paddingHorizontal: 56,
                         paddingVertical: 6,
                         backgroundColor: "green",
                         borderRadius: 14,
                     }}
-                    onPress={() => navigation.navigate("Home")}
+                    onPress={() => {
+                        navigation.navigate("Home");
+                        changeTab?.("Home");
+                    }}
                 >
                     <Text style={{ fontSize: 18, color: "#fff" }}>
                         Trang chủ

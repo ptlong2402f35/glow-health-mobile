@@ -31,6 +31,7 @@ export default function StaffDetailScreen(props: { route?: any }) {
     const { id } = props.route?.params;
     const { forwardId, forwardSelect, baseOrderId } = props.route?.params;
     let { userLoader } = useUserLoader();
+    let [images, setImages] = useState([]);
     const { switchForwardOrder } = useCustomerOrderDetail();
     const {
         staff,
@@ -102,7 +103,7 @@ export default function StaffDetailScreen(props: { route?: any }) {
     useEffect(() => {
         getStaffDetail({ id });
         setPriceIds([]);
-        getStaffReview({staffId: id});
+        getStaffReview({ staffId: id });
     }, [id]);
 
     useEffect(() => {
@@ -120,7 +121,34 @@ export default function StaffDetailScreen(props: { route?: any }) {
         <View style={detailStaffStyles.wrapContainer}>
             <BackButton />
             <ScrollView style={detailStaffStyles.container}>
-                <Image
+                <FlatList
+                    // style={{ marginHorizontal: 12 }}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    pagingEnabled={true}
+                    snapToAlignment="center"
+                    decelerationRate="fast"
+                    // ItemSeparatorComponent={() => (
+                    //     <View style={{ width: 16 }} />
+                    // )}
+                    contentContainerStyle={{
+                        justifyContent: "center",
+                        alignItems: "flex-start",
+                    }}
+                    data={[
+                        staff?.user?.urlImage,
+                        ...(staff?.images?.filter((val) => val) || []),
+                    ]}
+                    renderItem={({ item }) => (
+                        <Image
+                            source={item ? { uri: item } : DefaultAvatar}
+                            style={detailStaffStyles.imageWrap}
+                            resizeMode="contain"
+                        />
+                    )}
+                    keyExtractor={(item) => item + ""}
+                />
+                {/* <Image
                     source={
                         staff?.user?.urlImage
                             ? { uri: staff?.user?.urlImage }
@@ -128,7 +156,7 @@ export default function StaffDetailScreen(props: { route?: any }) {
                     }
                     style={detailStaffStyles.imageWrap}
                     resizeMode="cover"
-                />
+                /> */}
 
                 <View style={detailStaffStyles.staffWrap}>
                     <Text style={detailStaffStyles.staffName}>
